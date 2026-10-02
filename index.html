@@ -2,676 +2,1463 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>[Produktname] – Werkzeuge digitalisieren. Shadowboards standardisieren.</title>
-<meta name="description" content="Werkzeuge in Sekunden digitalisieren, in einer zentralen Bibliothek verwalten und daraus standardisierte Shadowboards mit fertigen DXF-Fräsdaten erstellen.">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Platzda – Dein Board. Deine Ordnung. Absolut Perfekt.</title>
+<meta name="description" content="Kamera, Werkzeug, Gaming-Gear: Fotografieren, im Browser anordnen & passgenau gefrästes Board bekommen.">
+<meta name="theme-color" content="#0d1117">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@90..110,400..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          dark: '#0B0F17',
+          card: '#161B26',
+          border: '#232B3B',
+          pop: '#FF5E00',
+          popGlow: '#FF8800',
+          cyanGlow: '#00F0FF',
+          teal: '#00D2B8',
+        },
+        fontFamily: {
+          display: ['Space Grotesk', 'sans-serif'],
+          body: ['Inter', 'sans-serif'],
+        }
+      }
+    }
+  }
+</script>
+
 <style>
-/* Design-Tokens aus ui/theme.py (Industrial Dark) */
-:root{
-  --bg:#0F1117; --panel:#1A1D27; --border:#2A2D3E; --selected:#1E2235;
-  --accent:#4F8EF7; --accent2:#38BDF8;
-  --success:#22C55E; --warning:#F59E0B; --error:#EF4444;
-  --text:#E2E8F0; --muted:#64748B; --muted-light:#94A3B8; --white:#FFFFFF;
-  --d1:#4F8EF7; --d2:#3E6CC4; --d3:#2F4F8F; --d4:#24396A; --d5:#1C2A4A;
-  --font:"Segoe UI","Segoe UI Variable Text","Archivo",system-ui,-apple-system,sans-serif;
-  --font-display:"Segoe UI Variable Display","Segoe UI","Archivo",system-ui,sans-serif;
-  --mono:Consolas,"SFMono-Regular",Menlo,ui-monospace,monospace;
-  --r-lg:14px; --r-md:10px; --r-sm:6px;
-  --wrap:1200px;
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px);
-  padding-bottom:env(safe-area-inset-bottom,0px);
-}
-*,*::before,*::after{box-sizing:inherit}
-html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px);background:var(--bg)}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
-img,svg{max-width:100%;display:block}
-a{color:inherit;text-decoration:none}
-a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-h1,h2,h3{font-family:var(--font-display);font-weight:700;letter-spacing:-0.015em;margin:0;line-height:1.06}
-p{margin:0}
-.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
-.muted{color:var(--muted-light)}
-.mono{font-family:var(--mono)}
+  :root {
+    --pop: #FF5E00;
+    --cyan: #00F0FF;
+    --bg: #0B0F17;
+  }
+  body {
+    background-color: var(--bg);
+    color: #F3F4F6;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #0b0f17; }
+  ::-webkit-scrollbar-thumb { background: #232b3b; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #FF5E00; }
 
-/* Section-Titel wie im Widget „Section“: nummeriert, ACCENT, Linie über Restbreite */
-.sec-label{display:flex;align-items:center;gap:14px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:22px}
-.sec-label::after{content:"";flex:1;height:1px;background:var(--border)}
-.sec-label .n{font-family:var(--mono);font-weight:400;letter-spacing:0}
+  /* Glassmorphism */
+  .glass {
+    background: rgba(22, 27, 38, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .glass-card {
+    background: linear-gradient(135deg, rgba(25, 31, 45, 0.8) 0%, rgba(15, 20, 30, 0.9) 100%);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+  }
+  .glass-card:hover {
+    border-color: rgba(255, 94, 0, 0.4);
+    box-shadow: 0 0 25px rgba(255, 94, 0, 0.15);
+  }
 
-/* Buttons wie FlatButton: primary ACCENT/WHITE, secondary BORDER/TEXT */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 22px;border-radius:var(--r-sm);font-weight:700;font-size:17px;border:0;cursor:pointer;font-family:inherit;transition:background .15s}
-.btn-primary{background:var(--accent);color:var(--white)}
-.btn-primary:hover{background:#6FA2F9}
-.btn-secondary{background:var(--border);color:var(--text)}
-.btn-secondary:hover{background:#363A50}
+  /* Neon Text & Glows */
+  .text-glow {
+    text-shadow: 0 0 15px rgba(255, 94, 0, 0.5);
+  }
+  .text-cyan-glow {
+    text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+  }
+  .glow-box {
+    box-shadow: 0 0 30px -5px rgba(255, 94, 0, 0.3);
+  }
 
-/* ---------- Header ---------- */
-.header{position:sticky;top:0;z-index:20;background:rgba(15,17,23,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
-.header .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:24px}
-.logo{display:flex;align-items:center;gap:12px;font-weight:700;font-size:19px}
-.nav{display:flex;gap:4px}
-.nav a{padding:10px 14px;border-radius:var(--r-sm);font-size:15px;color:var(--muted-light)}
-.nav a:hover{color:var(--text);background:var(--panel)}
-.header .btn{min-height:44px;font-size:15px;padding:10px 18px}
+  /* Interactive Elements */
+  .pocket { fill: #FF5E00; stroke: #0B0F17; stroke-width: 4; stroke-linejoin: round; }
+  .pocket-hit { cursor: pointer; }
+  .hero-item { cursor: pointer; transform-box: fill-box; transform-origin: center; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s; }
+  .hero-item:hover { transform: translateY(-4px) scale(1.02); }
+  .hero-item.out { transform: translateY(-30px) scale(0.9); opacity: 0; pointer-events: none; }
 
-/* ---------- Hero ---------- */
-.hero{padding:72px 0 88px;border-bottom:1px solid var(--border)}
-.hero h1{font-size:clamp(40px,6.2vw,80px);max-width:15ch}
-.hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;margin-top:48px;align-items:start}
-.hero-lead{font-size:20px;color:#C3CCD8;max-width:34em}
-.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin:32px 0 36px}
-.less{list-style:none;margin:0;padding:24px 0 0;border-top:1px solid var(--border);display:grid;gap:12px}
-.less li{display:flex;align-items:center;gap:12px;font-size:18px}
-.visual{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px}
-.visual-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px;color:var(--muted-light);padding:0 4px 14px}
-.legend{display:flex;flex-wrap:wrap;gap:14px;font-family:var(--mono);font-size:12px}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.legend i{width:12px;height:12px;border-radius:2px;display:inline-block}
-.chip{position:absolute;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;font-size:14px}
-.chip strong{display:block;font-size:14px}
-.chip-a{left:-28px;top:78px;display:flex;align-items:center;gap:12px}
-.chip-b{right:-24px;bottom:84px;width:230px;display:grid;gap:8px}
-.chip-b .row{display:flex;justify-content:space-between;gap:10px;font-size:13px}
-.ok{color:var(--success);font-weight:700}
-.warn{color:var(--warning);font-weight:700}
-.icon-box{width:38px;height:38px;border-radius:var(--r-sm);background:var(--selected);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex:none}
+  /* Editor Piece styling */
+  .ed-piece { cursor: grab; transform-box: fill-box; transform-origin: center; }
+  .ed-piece:active { cursor: grabbing; }
+  .ed-piece .pk { fill: #000000; stroke: #000000; stroke-width: 6; stroke-linejoin: round; transition: stroke 0.2s; }
+  .ed-piece.sel .pk { stroke: #00F0FF; stroke-width: 8; }
+  .ed-piece.bad .pk { stroke: #FF2A6D; stroke-width: 8; }
 
-/* ---------- Sections ---------- */
-section.block{padding:112px 0 0}
-.head{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:48px;align-items:end;margin-bottom:44px}
-.head h2{font-size:clamp(32px,4vw,50px)}
-.head p{font-size:19px}
+  /* Canvas bg */
+  #bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-/* Alter Prozess */
-.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-.steps li{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-md);padding:18px;min-height:118px;display:flex;flex-direction:column;justify-content:space-between;gap:16px;font-weight:600}
-.steps .n{font-family:var(--mono);font-weight:400;font-size:13px;color:var(--muted-light)}
-.steps li.last{border-color:var(--error);background:#1F1A22}
-.steps li.last .n{color:var(--error)}
-.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
-.note{border:1px solid var(--border);border-radius:var(--r-md);padding:26px 28px;font-size:18px}
-.note.accent{background:var(--accent);border-color:var(--accent);color:var(--white);font-size:21px;font-weight:700}
+  /* Animations */
+  @keyframes pulseGlow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+  }
+  .animate-pulse-glow { animation: pulseGlow 3s infinite ease-in-out; }
 
-/* Digitalisierung */
-.split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:64px;align-items:center}
-.split h2{font-size:clamp(30px,3.6vw,46px);margin-bottom:22px}
-.split .txt>p{font-size:19px;color:#C3CCD8}
-.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.tag{padding:8px 14px;border-radius:var(--r-sm);background:var(--panel);border:1px solid var(--border);font-size:15px}
-.next{margin-top:26px;padding-top:22px;border-top:1px solid var(--border);font-size:19px}
-.capture{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:14px;align-items:center}
-.capture figure{margin:0;background:var(--panel);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px}
-.capture figcaption{font-size:15px;color:var(--muted-light);margin-top:12px}
-.capture figcaption strong{color:var(--text);display:block}
-.hint{margin-top:14px;padding:16px 20px;border-radius:var(--r-md);background:var(--selected);border:1px solid var(--border);font-size:15px;color:#C3CCD8}
+  /* Range Sliders */
+  input[type=range] {
+    -webkit-appearance: none;
+    background: #232B3B;
+    height: 8px;
+    border-radius: 4px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px; width: 20px;
+    border-radius: 50%;
+    background: #FF5E00;
+    cursor: pointer;
+    box-shadow: 0 0 10px #FF5E00;
+  }
 
-/* Bibliothek */
-.lib{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px}
-.lib-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
-.search{flex:1 1 320px;display:flex;align-items:center;gap:12px;height:48px;padding:0 16px;background:var(--border);border:2px solid var(--border);border-radius:var(--r-sm)}
-.search:focus-within{border-color:var(--accent)}
-.search input{flex:1;border:0;background:transparent;color:var(--text);font:inherit;outline:none}
-.filter{height:48px;padding:0 16px;border-radius:var(--r-sm);border:1px solid var(--border);background:transparent;color:var(--text);font:inherit;font-size:15px;cursor:pointer}
-.filter.on{background:var(--accent);border-color:var(--accent);color:var(--white);font-weight:700}
-.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.tile{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;display:flex;flex-direction:column;gap:12px}
-.tile.sel{background:var(--selected);border-color:var(--accent)}
-.tile b{font-size:16px}
-.tile small{display:block;font-size:13px;color:var(--muted-light)}
-.uses{align-self:flex-start;font-size:12px;font-weight:700;padding:4px 8px;border-radius:4px;background:var(--border);color:var(--muted-light)}
-.tile.sel .uses{background:var(--accent);color:var(--white)}
-.lib-foot{display:flex;align-items:center;gap:10px;margin-top:18px;font-size:15px;color:var(--muted-light)}
-.claim{margin-top:28px;font-family:var(--font-display);font-weight:700;font-size:26px}
-
-/* Board-Designer */
-.designer{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
-.designer-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:20px;padding:40px 40px 32px}
-.designer-top h2{font-size:clamp(32px,4vw,52px)}
-.flow{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-.flow li{display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px;border-radius:var(--r-sm);background:var(--bg);border:1px solid var(--border);font-size:15px}
-.flow .n{width:26px;height:26px;border-radius:4px;background:var(--accent);color:var(--white);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
-.flow li.done{border-color:var(--success)}
-.flow li.done .n{background:var(--success);color:var(--bg)}
-.editor{display:grid;grid-template-columns:220px minmax(0,1fr) 280px;border-top:1px solid var(--border);min-height:440px}
-.ed-left,.ed-right{padding:18px;display:flex;flex-direction:column;gap:8px}
-.ed-left{border-right:1px solid var(--border)}
-.ed-right{border-left:1px solid var(--border)}
-.ed-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
-.ed-item{padding:10px 12px;border-radius:var(--r-sm);font-size:14px;color:var(--muted-light)}
-.ed-item.drag{background:var(--selected);color:var(--text);border-left:3px solid var(--accent)}
-.ed-canvas{background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:32px 32px;background-position:-1px -1px}
-.check{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
-.ed-right .btn{margin-top:auto;width:100%}
-.designer-foot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;padding:32px 40px 40px;border-top:1px solid var(--border)}
-.designer-foot p{font-size:17px;color:#C3CCD8}
-.designer-foot p.strong{color:var(--text);font-weight:700}
-
-/* Änderungen */
-.change-stage{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:var(--r-lg);min-height:400px;display:flex;align-items:center;justify-content:center;padding:32px;overflow:hidden}
-.mini{position:absolute;width:150px;height:104px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg)}
-.mini::after{content:"";position:absolute;left:20px;top:44px;width:100px;height:12px;border-radius:6px;background:var(--d1)}
-.dialog{position:relative;width:min(440px,100%);background:var(--panel);border:1px solid var(--accent);border-radius:var(--r-md);padding:24px}
-.dialog h3{font-size:19px;display:flex;align-items:center;gap:12px;font-family:var(--font)}
-.dialog p{font-size:15px;color:var(--muted-light);margin:14px 0 18px}
-.dialog .actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
-.dialog .btn{min-height:44px;font-size:15px;padding:10px 16px}
-.btn-ghost{background:transparent;color:var(--muted-light)}
-.btn-ghost:hover{color:var(--text)}
-
-/* Export */
-.dxf{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;display:grid;gap:8px}
-.dxf-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:8px}
-.dxf-head span:first-child{font-family:var(--mono);font-size:14px}
-.badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:4px;background:var(--success);color:var(--bg)}
-.layer{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r-sm);background:var(--bg);border:1px solid var(--border);font-size:14px}
-.layer .name{display:flex;align-items:center;gap:10px;font-family:var(--mono)}
-.layer i{width:12px;height:12px;border-radius:2px;display:inline-block}
-.dxf small{color:var(--muted-light);font-size:14px;margin-top:6px}
-.big-claim{font-family:var(--font-display);font-weight:700;font-size:26px;margin:22px 0 14px}
-
-/* Zeit */
-.bars{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-lg);padding:32px;display:grid;gap:22px}
-.bar-row .lbl{display:flex;justify-content:space-between;gap:16px;font-size:17px;margin-bottom:10px}
-.bar-row .lbl strong{font-family:var(--mono);font-weight:400;color:var(--text)}
-.bar{height:40px;border-radius:var(--r-sm)}
-.bar.today{background:var(--border);width:100%}
-.bar.new{background:var(--d2);width:8.3%;min-width:44px}
-.bar.lib{background:var(--accent2);width:40px}
-.bars small{color:var(--muted-light);font-size:14px}
-
-/* Zielgruppe + Infrastruktur */
-.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-lg);padding:40px}
-.card h2{font-size:clamp(26px,2.8vw,36px);margin-bottom:22px}
-.roles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
-.roles span{padding:10px 14px;border-radius:var(--r-sm);background:var(--selected);border:1px solid var(--border);font-size:15px}
-.chain{list-style:none;margin:22px 0;padding:0;display:grid;gap:8px}
-.chain li{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:var(--r-sm);background:var(--bg);border:1px solid var(--border);font-size:17px}
-.chain li .n{font-family:var(--mono);font-size:13px;color:var(--muted-light)}
-.chain li.hl{border-color:var(--accent);background:var(--selected)}
-.chain li.hl .n{color:var(--accent)}
-
-/* CTA */
-.cta{margin:112px 0 16px;background:var(--accent);color:var(--white);border-radius:var(--r-lg);padding:64px 56px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px;align-items:end}
-.cta h2{font-size:clamp(34px,5vw,64px);line-height:1.02}
-.cta p{font-size:20px;margin-top:20px;max-width:36em;color:#F4F8FF}
-.cta-btns{display:grid;gap:10px;min-width:240px}
-.btn-dark{background:var(--bg);color:var(--text)}
-.btn-dark:hover{background:var(--panel)}
-.btn-outline{background:transparent;color:var(--white);border:2px solid var(--white)}
-.btn-outline:hover{background:rgba(255,255,255,.12)}
-
-/* Footer */
-footer{border-top:1px solid var(--border);margin-top:64px;padding:48px 0 56px}
-footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px}
-.foot-cols{display:flex;flex-wrap:wrap;gap:64px;font-size:15px}
-.foot-cols div{display:grid;gap:10px;align-content:start}
-.foot-cols b{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
-.foot-cols a,.foot-cols span{color:var(--muted-light)}
-.foot-cols a:hover{color:var(--text)}
-.version{font-family:var(--mono);font-size:13px;color:var(--muted)}
-
-/* ---------- Responsive ---------- */
-@media (max-width:1080px){
-  .nav{display:none}
-  .hero-grid,.split,.head,.pair{grid-template-columns:minmax(0,1fr)}
-  .chip-a{left:12px;top:64px}
-  .chip-b{right:12px}
-  .editor{grid-template-columns:minmax(0,1fr)}
-  .ed-left,.ed-right{border:0;border-top:1px solid var(--border)}
-  .ed-left{order:2}.ed-right{order:3}
-  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .designer-foot{grid-template-columns:minmax(0,1fr)}
-  .cta{grid-template-columns:minmax(0,1fr)}
-}
-@media (max-width:640px){
-  body{font-size:16px}
-  .header .btn{display:none}
-  .hero{padding:48px 0 64px}
-  .chip{position:static;margin-top:10px}
-  .chip-b{width:auto}
-  .two,.tiles{grid-template-columns:minmax(0,1fr)}
-  .capture{grid-template-columns:minmax(0,1fr)}
-  .capture .arrow{transform:rotate(90deg);justify-self:center}
-  .designer-top,.designer-foot{padding-left:22px;padding-right:22px}
-  .card,.cta{padding:32px 24px}
-  section.block{padding-top:80px}
-}
+  /* Achievement Toast */
+  .toast-enter {
+    animation: toastIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  @keyframes toastIn {
+    from { transform: translate(-50%, -100%) scale(0.8); opacity: 0; }
+    to { transform: translate(-50%, 0) scale(1); opacity: 1; }
+  }
 </style>
 </head>
-<body>
+<body class="relative">
 
-<header class="header">
-  <div class="wrap">
-    <a class="logo" href="#top" aria-label="[Produktname] Startseite">
-      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="6" fill="#4F8EF7"/><rect x="7" y="12" width="20" height="10" rx="5" fill="#0F1117"/><rect x="12" y="15" width="10" height="4" rx="2" fill="#38BDF8"/></svg>
-      [Produktname]
+<!-- BACKGROUND CANVAS FOR PARTICLES -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- SVG GLOBAL DEFS -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <path id="s-ctrl" d="M40 10H140C170 10 182 40 186 72C190 102 178 120 160 118C146 116 138 98 126 90H94C90 90 90 90 86 90H64C52 98 44 116 30 118C12 120 0 102 4 72C8 40 20 10 40 10Z"/>
+    <path id="s-mouse" d="M40 0C66 0 78 22 78 56C78 92 62 116 39 116C16 116 0 92 0 56C0 22 14 0 40 0Z"/>
+    <path id="s-batt" d="M6 6H22Q28 6 28 12V100Q28 106 22 106H6Q0 106 0 100V12Q0 6 6 6ZM9 0H19V6H9Z"/>
+    <path id="s-driver" d="M8 0H26Q34 0 34 10V82Q34 92 24 92H21V168Q17 176 13 168V92H10Q0 92 0 82V10Q0 0 8 0Z"/>
+    <path id="s-sd" d="M0 4Q0 0 4 0H28L40 12V52Q40 56 36 56H4Q0 56 0 52Z"/>
+    <path id="s-coil" d="M46 0A46 46 0 1 1 46 92A46 46 0 1 1 46 0Z"/>
+    <path id="s-camera" d="M10 25 L35 25 L45 10 L75 10 L85 25 L110 25 Q120 25 120 35 L120 85 Q120 95 110 95 L10 95 Q0 95 0 85 L0 35 Q0 25 10 25 Z"/>
+    <path id="s-drone" d="M50 0 L70 30 L100 10 L80 40 L110 70 L70 60 L50 90 L30 60 L0 70 L20 40 L0 10 L30 30 Z"/>
+    <path id="s-knife" d="M5 0 L20 0 L25 120 L10 140 L0 120 Z"/>
+  </defs>
+</svg>
+
+<!-- AUDIO MUTE TOGGLE & TOAST CONTAINER -->
+<div id="toast-container" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none"></div>
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 glass border-b border-white/10 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3 font-display font-bold text-2xl tracking-wider text-white hover:text-pop transition-colors">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-pop to-amber-400 p-0.5 flex items-center justify-center shadow-lg shadow-pop/30">
+        <div class="w-full h-full bg-dark rounded-[10px] flex items-center justify-center">
+          <svg viewBox="0 0 32 32" class="w-6 h-6"><rect x="2" y="2" width="28" height="28" rx="6" fill="#FF5E00"/><rect x="8" y="8" width="7" height="16" rx="3" fill="#0B0F17"/><rect x="17" y="8" width="7" height="16" rx="3" fill="#00F0FF"/></svg>
+        </div>
+      </div>
+      <span>PLATZ<span class="text-pop">DA</span></span>
     </a>
-    <nav class="nav" aria-label="Hauptnavigation">
-      <a href="#ablauf">Ablauf</a>
-      <a href="#digitalisieren">Digitalisierung</a>
-      <a href="#bibliothek">Bibliothek</a>
-      <a href="#designer">Board-Designer</a>
-      <a href="#export">DXF-Export</a>
-      <a href="#zielgruppe">Für wen</a>
+
+    <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-300">
+      <a href="#hero-demo" class="hover:text-pop transition-colors">Power-Board</a>
+      <a href="#so-gehts" class="hover:text-pop transition-colors">So geht's</a>
+      <a href="#designer" class="hover:text-pop transition-colors">3D-Designer</a>
+      <a href="#calculator" class="hover:text-pop transition-colors">Preiskalkulator</a>
+      <a href="#quiz" class="hover:text-pop transition-colors">Ordnungs-Quiz</a>
     </nav>
-    <a class="btn btn-primary" href="#demo">Live-Demo anfragen</a>
+
+    <div class="flex items-center gap-4">
+      <button id="sound-toggle" type="button" class="p-2.5 rounded-full bg-card border border-border text-gray-300 hover:text-white hover:border-pop transition-all" title="Sound umschalten">
+        <svg id="sound-icon-on" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+        <svg id="sound-icon-off" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+      </button>
+      
+      <a href="#designer" class="relative group overflow-hidden px-6 py-3 rounded-full font-bold text-sm bg-gradient-to-r from-pop to-amber-500 text-white shadow-lg shadow-pop/30 hover:shadow-pop/60 transition-all duration-300 transform hover:-translate-y-0.5">
+        <span class="relative z-10">Board Bauen</span>
+        <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+      </a>
+    </div>
   </div>
 </header>
 
-<main id="top">
+<main class="relative z-10">
 
-<!-- ===================== HERO ===================== -->
-<section class="hero">
-  <div class="wrap">
-    <h1>Werkzeuge digitalisieren. Shadowboards standardisieren.</h1>
+  <!-- HERO SECTION -->
+  <section class="relative pt-12 pb-24 md:pt-20 md:pb-32 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left Text Content -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-pop/30 text-pop text-xs font-bold uppercase tracking-wider shadow-inner">
+            <span class="w-2 h-2 rounded-full bg-pop animate-ping"></span>
+            Next-Gen Inlay Configurator
+          </div>
 
-    <div class="hero-grid">
-      <div>
-        <p class="hero-lead">Vom physischen Werkzeug zur fertigen Fräsdatei – in einem durchgängigen System. Mit [Produktname] digitalisieren Sie Werkzeuge in Sekunden, verwalten sie dauerhaft in einer zentralen Bibliothek und erstellen daraus standardisierte Shadowboards.</p>
-        <div class="hero-cta">
-          <a class="btn btn-primary" href="#demo">Live-Demo ansehen</a>
-          <a class="btn btn-secondary" href="#ablauf">So funktioniert es</a>
-        </div>
-        <ul class="less">
-          <li><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="1" y="1" width="20" height="20" rx="4" fill="none" stroke="#22C55E" stroke-width="2"/><path d="M6.5 11.5l3 3 6-7" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Weniger Nachzeichnen.</li>
-          <li><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="1" y="1" width="20" height="20" rx="4" fill="none" stroke="#22C55E" stroke-width="2"/><path d="M6.5 11.5l3 3 6-7" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Weniger Nachmessen.</li>
-          <li><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="1" y="1" width="20" height="20" rx="4" fill="none" stroke="#22C55E" stroke-width="2"/><path d="M6.5 11.5l3 3 6-7" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Weniger manuelle Arbeit.</li>
-        </ul>
-      </div>
+          <h1 class="font-display font-extrabold text-4xl sm:text-6xl tracking-tight leading-[1.1] text-white">
+            JEDES TEIL HAT SEINEN <span class="text-transparent bg-clip-text bg-gradient-to-r from-pop via-amber-400 to-cyanGlow text-glow">PERFEKTEN PLATZ.</span>
+          </h1>
 
-      <div class="visual">
-        <div class="visual-bar">
-          <span class="mono">Board_Montage-1.board</span>
-          <div class="legend" aria-label="Legende der Frästiefen">
-            <span><i style="background:#4F8EF7"></i>15 mm</span>
-            <span><i style="background:#3E6CC4"></i>25 mm</span>
-            <span><i style="background:#2F4F8F"></i>40 mm</span>
-            <span><i style="background:#38BDF8"></i>Griffmulde</span>
+          <p class="text-gray-300 text-lg leading-relaxed font-normal">
+            Schluss mit Chaos im Koffer, Kiste oder Schublade. Werkzeug oder Equipment auf die Vorlage legen, Foto machen, online anordnen – wir fräsen dein Traum-Board.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <a href="#designer" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-pop to-amber-500 text-white font-bold text-base shadow-lg shadow-pop/30 hover:shadow-pop/50 hover:scale-[1.02] active:scale-[0.98] transition-all">
+              Jetzt ausprobieren
+            </a>
+            <a href="#before-after" class="px-8 py-4 rounded-2xl glass hover:bg-white/10 text-white font-semibold text-base border border-white/10 transition-all">
+              Vorher vs. Nachher
+            </a>
+          </div>
+
+          <!-- Mini feature badges -->
+          <div class="grid grid-cols-3 gap-4 pt-6 border-t border-white/10 text-center">
+            <div>
+              <div class="text-pop font-display font-bold text-xl sm:text-2xl">0.1 mm</div>
+              <div class="text-xs text-gray-400 font-medium">Präzision</div>
+            </div>
+            <div>
+              <div class="text-cyanGlow font-display font-bold text-xl sm:text-2xl">100%</div>
+              <div class="text-xs text-gray-400 font-medium">Passgarantie</div>
+            </div>
+            <div>
+              <div class="text-teal font-display font-bold text-xl sm:text-2xl">ESD</div>
+              <div class="text-xs text-gray-400 font-medium">High-Tech Schaum</div>
+            </div>
           </div>
         </div>
-        <svg viewBox="0 0 560 400" width="100%" role="img" aria-label="Shadowboard mit Taschen für Gabelschlüssel, Schraubendreher, Zange, Hammer und Innensechskant, nach Frästiefe eingefärbt">
-          <rect x="0" y="0" width="560" height="400" rx="6" fill="#0F1117" stroke="#2A2D3E"/>
-          <rect x="18" y="18" width="524" height="364" rx="3" fill="none" stroke="#2A2D3E" stroke-dasharray="6 6"/>
-          <!-- Gabelschlüssel, 15 mm -->
-          <g fill="#4F8EF7"><rect x="72" y="66" width="296" height="22" rx="11"/><circle cx="72" cy="77" r="30"/><circle cx="370" cy="77" r="26"/></g>
-          <g fill="#0F1117"><rect x="32" y="68" width="42" height="18"/><circle cx="370" cy="77" r="12"/></g>
-          <rect x="190" y="52" width="70" height="50" rx="25" fill="#38BDF8"/>
-          <!-- Schraubendreher, 25 mm -->
-          <g fill="#3E6CC4"><rect x="72" y="134" width="130" height="36" rx="16"/><rect x="198" y="146" width="182" height="12" rx="3"/><rect x="378" y="148" width="16" height="8" rx="2"/></g>
-          <rect x="112" y="120" width="50" height="64" rx="25" fill="#38BDF8"/>
-          <!-- Zange, 40 mm -->
-          <g transform="translate(152 288)">
-            <line x1="-100" y1="0" x2="0" y2="0" stroke="#2F4F8F" stroke-width="22" stroke-linecap="round"/>
-            <line x1="0" y1="0" x2="160" y2="-38" stroke="#2F4F8F" stroke-width="20" stroke-linecap="round"/>
-            <line x1="0" y1="0" x2="160" y2="38" stroke="#2F4F8F" stroke-width="20" stroke-linecap="round"/>
-            <circle r="18" fill="#2F4F8F"/>
-            <circle cx="150" cy="0" r="30" fill="#38BDF8"/>
-          </g>
-          <!-- Innensechskant, 15 mm -->
-          <path d="M340 226 L340 344 L372 344" fill="none" stroke="#4F8EF7" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
-          <!-- Hammer, 25 mm, ausgewählt -->
-          <g fill="#3E6CC4"><rect x="410" y="170" width="96" height="38" rx="5"/><rect x="446" y="194" width="24" height="170" rx="11"/></g>
-          <rect x="430" y="290" width="56" height="52" rx="26" fill="#38BDF8"/>
-          <rect x="400" y="160" width="116" height="214" fill="none" stroke="#4F8EF7" stroke-width="2"/>
-          <g fill="#4F8EF7"><rect x="396" y="156" width="8" height="8"/><rect x="512" y="156" width="8" height="8"/><rect x="396" y="370" width="8" height="8"/><rect x="512" y="370" width="8" height="8"/></g>
-          <!-- Bemaßung Randabstand -->
-          <g stroke="#38BDF8" stroke-width="1.4"><line x1="516" y1="120" x2="542" y2="120"/><line x1="516" y1="114" x2="516" y2="126"/><line x1="542" y1="114" x2="542" y2="126"/></g>
-          <text x="529" y="108" text-anchor="middle" fill="#38BDF8" font-size="12" font-family="Consolas, monospace">15</text>
-        </svg>
 
-        <div class="chip chip-a">
-          <div class="icon-box"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 6V3a1 1 0 0 1 1-1h3M14 2h3a1 1 0 0 1 1 1v3M18 14v3a1 1 0 0 1-1 1h-3M6 18H3a1 1 0 0 1-1-1v-3" fill="none" stroke="#4F8EF7" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="3" fill="#38BDF8"/></svg></div>
-          <div><strong>Kontur erkannt</strong><span class="muted">Aufnahme in ca. 20 Sekunden</span></div>
+        <!-- Right Interactive Power Board Demo -->
+        <div id="hero-demo" class="lg:col-span-7">
+          <div class="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden glow-box">
+            
+            <div class="flex items-center justify-between mb-4 pb-4 border-b border-white/10">
+              <div class="flex items-center gap-3">
+                <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span id="hero-status-text" class="font-display font-bold text-sm sm:text-base text-gray-200">
+                  Status: <span class="text-emerald-400">Vollständig bestückt</span>
+                </span>
+              </div>
+              <button id="hero-reset-btn" type="button" class="px-4 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-semibold text-gray-300 hover:text-white transition-all hidden">
+                Alles zurücklegen ↺
+              </button>
+            </div>
+
+            <!-- SVG Hero Board -->
+            <div class="relative bg-dark/80 rounded-2xl p-2 border border-white/5 shadow-inner">
+              <svg id="hero-board-svg" viewBox="0 0 600 380" class="w-full h-auto select-none touch-manipulation">
+                <rect x="10" y="10" width="580" height="360" rx="22" fill="#141923" stroke="#232B3B" stroke-width="3"/>
+                <!-- Grid background pattern -->
+                <g opacity="0.15">
+                  <path d="M 10,60 L 590,60 M 10,110 L 590,110 M 10,160 L 590,160 M 10,210 L 590,210 M 10,260 L 590,260 M 10,310 L 590,310" stroke="#00F0FF" stroke-width="1" stroke-dasharray="4 4"/>
+                  <path d="M 60,10 L 60,370 M 120,10 L 120,370 M 180,10 L 180,370 M 240,10 L 240,370 M 300,10 L 300,370 M 360,10 L 360,370 M 420,10 L 420,370 M 480,10 L 480,370 M 540,10 L 540,370" stroke="#00F0FF" stroke-width="1" stroke-dasharray="4 4"/>
+                </g>
+                <g id="hero-pockets"></g>
+                <g id="hero-items"></g>
+                <text x="560" y="352" text-anchor="end" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="12" fill="#3B465A" letter-spacing="0.1em">INTERACTIVE DEMO BOARD · PLATZDA</text>
+              </svg>
+            </div>
+
+            <div class="mt-4 flex items-center justify-between text-xs text-gray-400">
+              <span id="hero-hint">💡 Tippe ein Teil an, um es herauszunehmen!</span>
+              <span id="hero-combo" class="text-pop font-bold font-display text-sm">Combo: 0</span>
+            </div>
+
+          </div>
         </div>
-        <div class="chip chip-b" aria-label="Automatische Prüfung">
-          <strong>Prüfung</strong>
-          <div class="row"><span class="muted">Überschneidungen</span><span class="ok">keine</span></div>
-          <div class="row"><span class="muted">Abstand Werkzeuge</span><span class="ok">eingehalten</span></div>
-          <div class="row"><span class="muted">Randabstand</span><span class="ok">eingehalten</span></div>
-        </div>
+
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ===================== PROBLEM ===================== -->
-<section class="block" id="ablauf">
-  <div class="wrap">
-    <div class="sec-label"><span class="n">01</span>Der heutige Weg</div>
-    <div class="head">
-      <h2>Schluss mit Nachzeichnen, Skalieren und jedes Mal neu anfangen.</h2>
-      <p class="muted">Ein Shadowboard zu erstellen sollte kein eigenes Projekt sein. Heute sieht der Prozess oft so aus:</p>
-    </div>
-    <ol class="steps">
-      <li><span class="n">01</span>Foto machen</li>
-      <li><span class="n">02</span>Bild korrigieren</li>
-      <li><span class="n">03</span>Skalieren</li>
-      <li><span class="n">04</span>Nachzeichnen</li>
-      <li><span class="n">05</span>Pfade kontrollieren</li>
-      <li><span class="n">06</span>DXF exportieren</li>
-      <li><span class="n">07</span>Frässoftware öffnen</li>
-      <li><span class="n">08</span>Fräswege definieren</li>
-      <li><span class="n">09</span>Frästiefen festlegen</li>
-      <li class="last"><span class="n">10</span>Fräsen – und beim nächsten Board von vorne</li>
-    </ol>
-    <div class="two">
-      <p class="note">Für ein einzelnes Board können dabei mehrere Stunden Arbeitszeit entstehen. Werkzeuge werden erneut aufgenommen, Konturen neu gezeichnet und Entscheidungen erneut getroffen.</p>
-      <p class="note accent">[Produktname] macht daraus einen standardisierten Prozess.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ===================== DIGITALISIEREN ===================== -->
-<section class="block" id="digitalisieren">
-  <div class="wrap">
-    <div class="sec-label"><span class="n">02</span>Digitalisieren</div>
-    <div class="split">
-      <div class="txt">
-        <h2>Ein Werkzeug. Einmal digitalisieren. Immer wieder verwenden.</h2>
-        <p>Legen Sie das Werkzeug in die Aufnahme und starten Sie die Digitalisierung. Nach wenigen Sekunden steht die digitale Kontur zur Verfügung. Die Software korrigiert die Perspektive und erstellt daraus ein bearbeitbares digitales Werkzeug.</p>
-        <p style="margin-top:22px;font-weight:700">Anschließend können Sie:</p>
-        <div class="tags">
-          <span class="tag">Konturen bearbeiten</span>
-          <span class="tag">Maße anpassen</span>
-          <span class="tag">Griffmulden hinzufügen</span>
-          <span class="tag">Frästiefen definieren</span>
-          <span class="tag">Informationen hinterlegen</span>
-          <span class="tag">in der Bibliothek speichern</span>
-        </div>
-        <p class="next"><strong>Und beim nächsten Board?</strong> Nicht neu zeichnen. Einfach aus der Bibliothek auswählen.</p>
+  <!-- BEFORE / AFTER INTERACTIVE SLIDER -->
+  <section id="before-after" class="py-20 bg-dark/60 border-y border-white/5 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <h2 class="font-display font-bold text-3xl sm:text-4xl text-white mb-4">
+          CHAOS VS. <span class="text-pop">PLATZDA ORDNUNG</span>
+        </h2>
+        <p class="text-gray-400 text-base">Schiebe den Regler, um den Unterschied zu sehen. Nie wieder Suchen, nie wieder verlorene Teile.</p>
       </div>
 
-      <div>
-        <div class="capture">
-          <figure>
-            <svg viewBox="0 0 300 250" width="100%" role="img" aria-label="Werkzeug auf der Leuchtplatte zwischen vier Markern">
-              <defs><g id="mk"><rect width="34" height="34" fill="#0F1117"/><rect x="6" y="6" width="7" height="7" fill="#fff"/><rect x="20" y="6" width="7" height="7" fill="#fff"/><rect x="13" y="13" width="7" height="7" fill="#fff"/><rect x="6" y="20" width="14" height="7" fill="#fff"/><rect x="20" y="20" width="7" height="7" fill="#fff"/></g></defs>
-              <rect width="300" height="250" rx="4" fill="#F4F7FB"/>
-              <use href="#mk" x="12" y="12"/><use href="#mk" x="254" y="12"/><use href="#mk" x="12" y="204"/><use href="#mk" x="254" y="204"/>
-              <g transform="rotate(-16 150 125)" fill="#1A1D27"><rect x="70" y="117" width="160" height="16" rx="8"/><circle cx="70" cy="125" r="22"/><circle cx="232" cy="125" r="19"/></g>
-              <g transform="rotate(-16 150 125)" fill="#F4F7FB"><rect x="40" y="118" width="30" height="14"/><circle cx="232" cy="125" r="8"/></g>
-            </svg>
-            <figcaption><strong>Aufnahme</strong>Leuchtplatte und Marker für Maßstab und Perspektive</figcaption>
-          </figure>
-          <div class="arrow" aria-hidden="true"><svg width="36" height="36" viewBox="0 0 36 36"><rect x="1" y="1" width="34" height="34" rx="6" fill="#1E2235" stroke="#2A2D3E"/><path d="M11 18h14M19 12l6 6-6 6" fill="none" stroke="#4F8EF7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <figure>
-            <svg viewBox="0 0 300 250" width="100%" role="img" aria-label="Erkannte, entzerrte Vektorkontur mit Stützpunkten und automatisch erkannter Länge">
-              <defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#2A2D3E" stroke-width="1"/></pattern></defs>
-              <rect width="300" height="250" rx="4" fill="#0F1117"/><rect width="300" height="250" rx="4" fill="url(#grid)"/>
-              <g fill="none" stroke="#4F8EF7" stroke-width="2.2"><rect x="70" y="112" width="160" height="16" rx="8"/><circle cx="70" cy="120" r="22"/><circle cx="232" cy="120" r="19"/><circle cx="232" cy="120" r="8"/></g>
-              <g fill="#E2E8F0"><circle cx="48" cy="120" r="3.2"/><circle cx="92" cy="112" r="3.2"/><circle cx="150" cy="112" r="3.2"/><circle cx="213" cy="128" r="3.2"/><circle cx="251" cy="120" r="3.2"/><circle cx="70" cy="142" r="3.2"/></g>
-              <g stroke="#94A3B8" stroke-width="1.2"><line x1="48" y1="178" x2="251" y2="178"/><line x1="48" y1="172" x2="48" y2="184"/><line x1="251" y1="172" x2="251" y2="184"/></g>
-              <rect x="120" y="168" width="60" height="20" fill="#0F1117"/>
-              <text x="150" y="182" text-anchor="middle" fill="#94A3B8" font-size="12" font-family="Consolas, monospace">[mm]</text>
-              <text x="150" y="222" text-anchor="middle" fill="#94A3B8" font-size="13" font-family="Segoe UI, sans-serif">Maße automatisch erkannt</text>
-            </svg>
-            <figcaption><strong>Digitales Werkzeug</strong>Entzerrt, ausgerichtet und bearbeitbar</figcaption>
-          </figure>
-        </div>
-        <p class="hint">Ohne Kabine geht es auch: Marker-Vorlage ausdrucken und mit dem Smartphone fotografieren. Die Kabine mit Leuchtplatte liefert die saubersten Kanten.</p>
-      </div>
-    </div>
-  </div>
-</section>
+      <div class="max-w-4xl mx-auto">
+        <div id="ba-slider" class="relative rounded-3xl overflow-hidden glass-card border border-white/10 h-[350px] sm:h-[450px] select-none cursor-ew-resize">
+          <!-- After Image / Board (Bottom Layer) -->
+          <div class="absolute inset-0 bg-[#161B26] p-8 flex flex-col justify-center items-center text-center">
+            <div class="w-full h-full rounded-2xl bg-dark/90 border border-pop/30 p-6 flex flex-col justify-between relative overflow-hidden">
+              <div class="absolute top-4 right-4 bg-pop/20 text-pop text-xs font-bold px-3 py-1 rounded-full border border-pop/40">MIT PLATZDA</div>
+              <div class="grid grid-cols-4 gap-6 items-center justify-items-center h-full">
+                <div class="w-20 h-20 rounded-2xl bg-card border-2 border-pop flex items-center justify-center shadow-lg shadow-pop/20">
+                  <svg viewBox="0 0 100 100" class="w-12 h-12 text-pop" fill="currentColor"><path d="M20 20 H80 V80 H20 Z"/></svg>
+                </div>
+                <div class="w-24 h-24 rounded-2xl bg-card border-2 border-cyanGlow flex items-center justify-center shadow-lg shadow-cyanGlow/20">
+                  <svg viewBox="0 0 100 100" class="w-14 h-14 text-cyanGlow" fill="currentColor"><circle cx="50" cy="50" r="35"/></svg>
+                </div>
+                <div class="w-20 h-32 rounded-2xl bg-card border-2 border-amber-400 flex items-center justify-center shadow-lg shadow-amber-400/20">
+                  <svg viewBox="0 0 100 100" class="w-12 h-12 text-amber-400" fill="currentColor"><path d="M10 10 L90 90 M90 10 L10 90" stroke="currentColor" stroke-width="12"/></svg>
+                </div>
+                <div class="w-28 h-20 rounded-2xl bg-card border-2 border-teal flex items-center justify-center shadow-lg shadow-teal/20">
+                  <svg viewBox="0 0 100 100" class="w-14 h-14 text-teal" fill="currentColor"><rect x="10" y="30" width="80" height="40" rx="10"/></svg>
+                </div>
+              </div>
+              <div class="text-left">
+                <div class="font-display font-bold text-white text-lg">Dein gefrästes Schaumstoff-Board</div>
+                <div class="text-xs text-gray-400">Jedes Teil rastet perfekt ein. Voller Überblick auf einen Blick.</div>
+              </div>
+            </div>
+          </div>
 
-<!-- ===================== BIBLIOTHEK ===================== -->
-<section class="block" id="bibliothek">
-  <div class="wrap">
-    <div class="sec-label"><span class="n">03</span>Werkzeugbibliothek</div>
-    <div class="head">
-      <h2>Ihre Werkzeuge gehören in eine Bibliothek – nicht in einzelne Dateien.</h2>
-      <p class="muted">Alle digitalisierten Werkzeuge bleiben dauerhaft gespeichert. Mit der Zeit entsteht eine digitale Bibliothek Ihres Werkzeugbestands.</p>
-    </div>
+          <!-- Before Image / Chaos (Top Layer - Clipped) -->
+          <div id="ba-before" class="absolute inset-0 bg-[#251A18] p-8 flex flex-col justify-center items-center text-center overflow-hidden" style="width: 50%;">
+            <div class="w-[800px] h-full rounded-2xl bg-[#1A1211] border border-red-500/30 p-6 flex flex-col justify-between relative">
+              <div class="absolute top-4 left-4 bg-red-500/20 text-red-400 text-xs font-bold px-3 py-1 rounded-full border border-red-500/40">OHNE PLATZDA (CHAOS)</div>
+              
+              <!-- Messy items -->
+              <div class="relative h-full w-full">
+                <div class="absolute top-8 left-12 rotate-45 opacity-60 text-red-300">
+                  <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                </div>
+                <div class="absolute bottom-6 left-1/3 -rotate-12 opacity-50 text-amber-600">
+                  <svg class="w-32 h-20" fill="currentColor" viewBox="0 0 24 24"><path d="M20 8h-3V4H7v4H4c-1.1 0-2 .9-2 2v10h20V10c0-1.1-.9-2-2-2z"/></svg>
+                </div>
+                <div class="absolute top-12 right-20 rotate-180 opacity-70 text-gray-500">
+                  <svg class="w-28 h-28" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+                </div>
+              </div>
 
-    <div class="lib">
-      <div class="lib-bar">
-        <label class="search">
-          <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6" fill="none" stroke="#94A3B8" stroke-width="2"/><path d="M13 13l5 5" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/></svg>
-          <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Werkzeug suchen</span>
-          <input type="search" value="Gabelschlüssel">
-        </label>
-        <button class="filter on" type="button">Projekt: Montage 1</button>
-        <button class="filter" type="button">Kategorie</button>
-        <button class="filter" type="button">Stichwort</button>
-        <button class="filter" type="button">Datum</button>
-      </div>
-      <div class="tiles">
-        <div class="tile sel">
-          <svg viewBox="0 0 200 84" width="100%" aria-hidden="true"><rect width="200" height="84" rx="4" fill="#0F1117"/><g fill="#4F8EF7"><rect x="42" y="35" width="116" height="14" rx="7"/><circle cx="42" cy="42" r="18"/><circle cx="160" cy="42" r="15"/></g><g fill="#0F1117"><rect x="18" y="36" width="24" height="12"/><circle cx="160" cy="42" r="6"/></g><rect x="84" y="28" width="30" height="28" rx="14" fill="#38BDF8"/></svg>
-          <div><b>Gabelschlüssel 17</b><small>Montage 1, Schlüssel</small></div>
-          <span class="uses">auf 4 Boards</span>
-        </div>
-        <div class="tile">
-          <svg viewBox="0 0 200 84" width="100%" aria-hidden="true"><rect width="200" height="84" rx="4" fill="#0F1117"/><g fill="#3E6CC4"><rect x="24" y="28" width="70" height="28" rx="12"/><rect x="92" y="38" width="80" height="8" rx="2"/></g><rect x="44" y="20" width="28" height="44" rx="14" fill="#38BDF8"/></svg>
-          <div><b>Schraubendreher PH2</b><small>Montage 1, Schraubendreher</small></div>
-          <span class="uses">auf 2 Boards</span>
-        </div>
-        <div class="tile">
-          <svg viewBox="0 0 200 84" width="100%" aria-hidden="true"><rect width="200" height="84" rx="4" fill="#0F1117"/><g transform="translate(76 42)" stroke="#2F4F8F" stroke-linecap="round"><line x1="-50" y1="0" x2="0" y2="0" stroke-width="12"/><line x1="0" y1="0" x2="90" y2="-20" stroke-width="11"/><line x1="0" y1="0" x2="90" y2="20" stroke-width="11"/></g><circle cx="76" cy="42" r="9" fill="#2F4F8F"/><circle cx="160" cy="42" r="16" fill="#38BDF8"/></svg>
-          <div><b>Kombizange 180</b><small>Maschine 4, Zangen</small></div>
-          <span class="uses">auf 3 Boards</span>
-        </div>
-        <div class="tile">
-          <svg viewBox="0 0 200 84" width="100%" aria-hidden="true"><rect width="200" height="84" rx="4" fill="#0F1117"/><g fill="#3E6CC4"><rect x="30" y="36" width="120" height="12" rx="6"/><rect x="146" y="17" width="24" height="50" rx="4"/></g><rect x="52" y="26" width="30" height="32" rx="15" fill="#38BDF8"/></svg>
-          <div><b>Schlosserhammer</b><small>Instandhaltung, Hämmer</small></div>
-          <span class="uses">auf 1 Board</span>
-        </div>
-      </div>
-      <p class="lib-foot">
-        <svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 3v12M5 9l6 6 6-6M4 19h14" fill="none" stroke="#4F8EF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Suchen nach Projekt, Kategorie, Stichwort oder anderen Merkmalen – und das Werkzeug direkt auf das Board ziehen.
-      </p>
-    </div>
-    <p class="claim">Einmal digitalisiert. Für viele Boards verfügbar.</p>
-  </div>
-</section>
+              <div class="text-left">
+                <div class="font-display font-bold text-red-200 text-lg">Klassisches Kisten- & Schubladen-Chaos</div>
+                <div class="text-xs text-red-300/70">Kratzer, stundenlanges Suchen und unvollständiges Werkzeug.</div>
+              </div>
+            </div>
+          </div>
 
-<!-- ===================== BOARD-DESIGNER ===================== -->
-<section class="block" id="designer">
-  <div class="wrap">
-    <div class="sec-label"><span class="n">04</span>Board-Designer</div>
-    <div class="designer">
-      <div class="designer-top">
-        <h2>Shadowboards bauen<br>wie Drag &amp; Drop.</h2>
-        <ol class="flow">
-          <li><span class="n">1</span>Werkzeug auswählen</li>
-          <li><span class="n">2</span>Auf das Board ziehen</li>
-          <li><span class="n">3</span>Positionieren</li>
-          <li class="done"><span class="n">4</span>Fertig</li>
-        </ol>
-      </div>
-
-      <div class="editor">
-        <div class="ed-left">
-          <div class="ed-title">Bibliothek</div>
-          <div class="ed-item">Gabelschlüssel 17</div>
-          <div class="ed-item">Schraubendreher PH2</div>
-          <div class="ed-item">Kombizange 180</div>
-          <div class="ed-item drag">Schlosserhammer</div>
-          <div class="ed-item">Innensechskant 6</div>
-        </div>
-        <div class="ed-canvas">
-          <svg viewBox="0 0 560 380" width="100%" style="max-width:600px" role="img" aria-label="Board im Editor mit platzierten Werkzeugtaschen und einem Hinweis zum Randabstand">
-            <rect width="560" height="380" rx="4" fill="#1A1D27" stroke="#2A2D3E"/>
-            <rect x="18" y="18" width="524" height="344" fill="none" stroke="#2A2D3E" stroke-dasharray="6 6"/>
-            <g fill="#4F8EF7"><rect x="70" y="60" width="260" height="20" rx="10"/><circle cx="70" cy="70" r="26"/><circle cx="332" cy="70" r="22"/></g>
-            <g fill="#1A1D27"><rect x="34" y="62" width="36" height="16"/><circle cx="332" cy="70" r="10"/></g>
-            <rect x="170" y="48" width="62" height="44" rx="22" fill="#38BDF8"/>
-            <g fill="#3E6CC4"><rect x="60" y="130" width="120" height="32" rx="14"/><rect x="176" y="141" width="160" height="10" rx="3"/></g>
-            <rect x="92" y="118" width="46" height="56" rx="23" fill="#38BDF8"/>
-            <g transform="translate(130 270)"><line x1="-80" y1="0" x2="0" y2="0" stroke="#2F4F8F" stroke-width="20" stroke-linecap="round"/><line x1="0" y1="0" x2="140" y2="-32" stroke="#2F4F8F" stroke-width="18" stroke-linecap="round"/><line x1="0" y1="0" x2="140" y2="32" stroke="#2F4F8F" stroke-width="18" stroke-linecap="round"/><circle r="16" fill="#2F4F8F"/><circle cx="132" cy="0" r="26" fill="#38BDF8"/></g>
-            <!-- Hammer wird gezogen -->
-            <g><rect x="436" y="150" width="90" height="32" rx="5" fill="#3E6CC4" fill-opacity=".5" stroke="#4F8EF7" stroke-width="2"/><rect x="468" y="172" width="22" height="160" rx="10" fill="#3E6CC4" fill-opacity=".5" stroke="#4F8EF7" stroke-width="2"/></g>
-            <line x1="410" y1="18" x2="410" y2="362" stroke="#38BDF8" stroke-width="1.2" stroke-dasharray="3 4"/>
-            <rect x="526" y="150" width="16" height="32" fill="#F59E0B" fill-opacity=".35"/>
-            <line x1="526" y1="166" x2="542" y2="166" stroke="#F59E0B" stroke-width="2"/>
-          </svg>
-        </div>
-        <div class="ed-right">
-          <div class="ed-title">Automatische Prüfungen</div>
-          <div class="check"><span>Überschneidungen</span><span class="ok">keine</span></div>
-          <div class="check"><span>Abstände</span><span class="ok">eingehalten</span></div>
-          <div class="check"><span>Randbereich</span><span class="warn">1 Hinweis</span></div>
-          <div class="check"><span>Eigene Regeln</span><span class="muted">einstellbar</span></div>
-          <button class="btn btn-primary" type="button">Automatisch anordnen</button>
-        </div>
-      </div>
-
-      <div class="designer-foot">
-        <p>Automatische Prüfungen für Abstände, Überschneidungen, Randbereiche und weitere definierte Regeln.</p>
-        <p>Werkzeuge drehen, verschieben und bearbeiten. Griffmulden direkt hinzufügen. Und auf Wunsch ordnet die Software die Werkzeuge automatisch an.</p>
-        <p class="strong">Einfach genug für den täglichen Einsatz. Leistungsfähig genug für industrielle Anwendungen.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===================== ÄNDERUNGEN ===================== -->
-<section class="block">
-  <div class="wrap">
-    <div class="sec-label"><span class="n">05</span>Änderungen</div>
-    <div class="split">
-      <div class="txt">
-        <h2>Wenn sich ein Werkzeug ändert, fangen Sie nicht von vorne an.</h2>
-        <p>Das Werkzeug auf Ihrem Board ist mit dem Eintrag in Ihrer Werkzeugbibliothek verknüpft. Sie ändern das Werkzeug – und [Produktname] erkennt, dass es auf mehreren Boards verwendet wird.</p>
-        <p style="margin-top:16px">Soll die Änderung überall übernommen werden? Oder möchten Sie eine neue Variante erstellen? Sie entscheiden. So bleiben Ihre Boards mit der Bibliothek verbunden, statt zu isolierten Dateien zu werden.</p>
-      </div>
-      <div class="change-stage">
-        <div class="mini" style="left:28px;top:28px"></div>
-        <div class="mini" style="left:52px;top:52px"></div>
-        <div class="mini" style="right:28px;bottom:28px"></div>
-        <div class="dialog" role="dialog" aria-labelledby="dlg-t">
-          <h3 id="dlg-t"><span class="icon-box"><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v8M10 15v1" stroke="#F59E0B" stroke-width="2.4" stroke-linecap="round"/></svg></span>Werkzeug wird mehrfach verwendet</h3>
-          <p>„Gabelschlüssel 17“ liegt auf 17 Boards. Beim Speichern werden alle diese Boards aktualisiert.</p>
-          <div class="actions">
-            <button class="btn btn-ghost" type="button">Abbrechen</button>
-            <button class="btn btn-secondary" type="button">Als Kopie speichern</button>
-            <button class="btn btn-primary" type="button">Speichern</button>
+          <!-- Divider Handle -->
+          <div id="ba-handle" class="absolute top-0 bottom-0 w-1 bg-gradient-to-b from-pop via-white to-cyanGlow cursor-ew-resize shadow-[0_0_15px_#FF5E00]" style="left: 50%;">
+            <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-pop text-white font-bold flex items-center justify-center shadow-lg border-2 border-white">
+              ↔
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ===================== EXPORT ===================== -->
-<section class="block" id="export">
-  <div class="wrap">
-    <div class="sec-label"><span class="n">06</span>DXF-Export</div>
-    <div class="split">
-      <div class="dxf">
-        <div class="dxf-head"><span>Montage-1_Board-A.dxf</span><span class="badge">bereit</span></div>
-        <div class="layer"><span class="name"><i style="background:#94A3B8"></i>Aussenkontur_Board</span><span class="muted">Zuschnitt</span></div>
-        <div class="layer"><span class="name"><i style="background:#4F8EF7"></i>Tasche_Tiefe_15mm</span><span class="muted">2 Konturen</span></div>
-        <div class="layer"><span class="name"><i style="background:#3E6CC4"></i>Tasche_Tiefe_25mm</span><span class="muted">2 Konturen</span></div>
-        <div class="layer"><span class="name"><i style="background:#2F4F8F"></i>Tasche_Tiefe_40mm</span><span class="muted">1 Kontur</span></div>
-        <div class="layer"><span class="name"><i style="background:#38BDF8"></i>Griffmulde_Tiefe_15mm</span><span class="muted">4 Konturen</span></div>
-        <small>Beispiel: Die Frästiefe steht bereits im Ebenennamen. Im CAM-System nur noch Fräser wählen und Tiefe je Ebene zuweisen.</small>
+  <!-- SO GEHT'S SECTION -->
+  <section id="so-gehts" class="py-24 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="text-pop font-bold text-xs uppercase tracking-widest mb-2">Einfach & Schnell</div>
+        <h2 class="font-display font-bold text-3xl sm:text-5xl text-white">IN 5 SCHRITTEN ZUM BOARD</h2>
+        <p class="text-gray-400 mt-4 text-base sm:text-lg">Kein technisches Vorwissen nötig. Dein Smartphone reicht völlig aus.</p>
       </div>
-      <div class="txt">
-        <h2>Vom Board direkt zur Fräsdatei.</h2>
-        <p>Wenn Ihr Board fertig ist, erzeugt [Produktname] die benötigten DXF-Daten. Konturen, Ebenen und Frästiefen werden strukturiert ausgegeben und können anschließend in Ihrer vorhandenen CAM-Software weiterverarbeitet werden.</p>
-        <p class="big-claim">Ihre Fräse. Ihr CAM-System. Ihre Daten.</p>
-        <p class="muted" style="font-size:17px">[Produktname] ersetzt nicht zwangsläufig Ihre bestehende Fertigungsumgebung – es macht den Weg dorthin deutlich einfacher.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ===================== ZEIT ===================== -->
-<section class="block">
-  <div class="wrap">
-    <div class="sec-label"><span class="n">07</span>Zeit</div>
-    <div class="head">
-      <h2>Von Stunden zu Minuten.</h2>
-      <p class="muted">Werkzeug digitalisieren. Board erstellen. DXF exportieren. Und wenn ein Werkzeug bereits in Ihrer Bibliothek existiert, beginnt der Prozess nicht wieder bei null.</p>
-    </div>
-    <div class="bars">
-      <div class="bar-row">
-        <div class="lbl"><span>Heute, manuell: Board mit 10 Werkzeugen</span><strong>ca. 6 h</strong></div>
-        <div class="bar today"></div>
-      </div>
-      <div class="bar-row">
-        <div class="lbl"><span>Mit [Produktname]: dasselbe Board, Werkzeuge neu digitalisiert</span><strong>ca. 30 min</strong></div>
-        <div class="bar new"></div>
-      </div>
-      <div class="bar-row">
-        <div class="lbl"><span>Weiteres Board mit Werkzeugen aus der Bibliothek</span><strong>ca. 1 min</strong></div>
-        <div class="bar lib"></div>
-      </div>
-      <small>Beispielrechnung aus dem bisherigen manuellen Prozess. Die tatsächliche Zeit hängt von Werkzeug und Board ab.</small>
-    </div>
-  </div>
-</section>
+      <div class="grid lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Step Navigation Buttons -->
+        <div class="lg:col-span-5 space-y-3">
+          <button type="button" data-step="1" class="step-btn w-full text-left p-5 rounded-2xl glass-card transition-all flex items-start gap-4 border-l-4 border-l-pop">
+            <div class="w-10 h-10 rounded-xl bg-pop/20 text-pop font-display font-bold flex items-center justify-center shrink-0">1</div>
+            <div>
+              <div class="font-display font-bold text-white text-lg flex items-center gap-2">
+                Vorlage drucken <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-sans">Kostenlos</span>
+              </div>
+              <p class="text-sm text-gray-400 mt-1">Ein normales A4-Blatt mit unseren Eck-Markierungen ausdrucken.</p>
+            </div>
+          </button>
 
-<!-- ===================== ZIELGRUPPE + INFRASTRUKTUR ===================== -->
-<section class="block" id="zielgruppe">
-  <div class="wrap">
-    <div class="sec-label"><span class="n">08</span>Für wen</div>
-    <div class="pair">
-      <div class="card">
-        <h2>Entwickelt für Menschen, die eigentlich andere Dinge erledigen sollten.</h2>
-        <div class="roles">
-          <span>Lean Management</span>
-          <span>Industrial Engineering</span>
-          <span>5S-Verantwortliche</span>
-          <span>Produktions- und Abteilungsleiter</span>
-          <span>Mitarbeiter in Werkstatt und Fertigung</span>
+          <button type="button" data-step="2" class="step-btn w-full text-left p-5 rounded-2xl glass-card transition-all flex items-start gap-4 border-l-4 border-l-transparent hover:border-l-gray-600 opacity-70">
+            <div class="w-10 h-10 rounded-xl bg-white/5 text-gray-400 font-display font-bold flex items-center justify-center shrink-0">2</div>
+            <div>
+              <div class="font-display font-bold text-white text-lg flex items-center gap-2">
+                Drauflegen & Fotografieren <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-sans">Kostenlos</span>
+              </div>
+              <p class="text-sm text-gray-400 mt-1">Gegenstand auf die Vorlage legen und mit dem Handy von oben knipsen.</p>
+            </div>
+          </button>
+
+          <button type="button" data-step="3" class="step-btn w-full text-left p-5 rounded-2xl glass-card transition-all flex items-start gap-4 border-l-4 border-l-transparent hover:border-l-gray-600 opacity-70">
+            <div class="w-10 h-10 rounded-xl bg-white/5 text-gray-400 font-display font-bold flex items-center justify-center shrink-0">3</div>
+            <div>
+              <div class="font-display font-bold text-white text-lg flex items-center gap-2">
+                Kontrollmaß eingeben <span class="text-[10px] bg-cyanGlow/20 text-cyanGlow px-2 py-0.5 rounded-full font-sans">Optional</span>
+              </div>
+              <p class="text-sm text-gray-400 mt-1">Ein Außenmaß zur Überprüfung eingeben für 100%ige Passgenauigkeit.</p>
+            </div>
+          </button>
+
+          <button type="button" data-step="4" class="step-btn w-full text-left p-5 rounded-2xl glass-card transition-all flex items-start gap-4 border-l-4 border-l-transparent hover:border-l-gray-600 opacity-70">
+            <div class="w-10 h-10 rounded-xl bg-white/5 text-gray-400 font-display font-bold flex items-center justify-center shrink-0">4</div>
+            <div>
+              <div class="font-display font-bold text-white text-lg flex items-center gap-2">
+                Im Browser anordnen <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-sans">Kostenlos</span>
+              </div>
+              <p class="text-sm text-gray-400 mt-1">Gegenstände wie Bausteine verschieben, drehen & Wunschextras festlegen.</p>
+            </div>
+          </button>
+
+          <button type="button" data-step="5" class="step-btn w-full text-left p-5 rounded-2xl glass-card transition-all flex items-start gap-4 border-l-4 border-l-transparent hover:border-l-gray-600 opacity-70">
+            <div class="w-10 h-10 rounded-xl bg-white/5 text-gray-400 font-display font-bold flex items-center justify-center shrink-0">5</div>
+            <div>
+              <div class="font-display font-bold text-white text-lg flex items-center gap-2">
+                Fräsen & Liefern lassen <span class="text-[10px] bg-pop/20 text-pop px-2 py-0.5 rounded-full font-sans">Bestellung</span>
+              </div>
+              <p class="text-sm text-gray-400 mt-1">Wir fertigen dein Board aus Präzisions-Schaumstoff und senden es zu dir.</p>
+            </div>
+          </button>
         </div>
-        <p class="muted">Für alle, die Shadowboards brauchen, aber nicht jedes Mal Stunden mit Nachzeichnen, Skalieren und manueller Konstruktion verbringen möchten.</p>
-      </div>
-      <div class="card">
-        <h2>Ihre bestehende Infrastruktur bleibt bestehen.</h2>
-        <p class="muted">[Produktname] ist keine neue Produktionsmaschine. Sie können weiterhin mit Ihrer vorhandenen Frästechnik und CAM-Software arbeiten. Die Software schließt die Lücke zwischen:</p>
-        <ol class="chain">
-          <li><span class="n">1</span>Physisches Werkzeug</li>
-          <li><span class="n">2</span>Digitales Werkzeug</li>
-          <li><span class="n">3</span>Shadowboard</li>
-          <li class="hl"><span class="n">4</span>Fräsdaten</li>
-        </ol>
-        <p style="font-weight:700">Und genau dort entsteht der größte Teil der manuellen Arbeit.</p>
-      </div>
-    </div>
 
-    <!-- ===================== CTA ===================== -->
-    <div class="cta" id="demo">
-      <div>
-        <h2>Starten Sie mit einem Werkzeug.<br>Nicht mit einem Großprojekt.</h2>
-        <p>Nehmen Sie ein Werkzeug aus Ihrem aktuellen Prozess und sehen Sie selbst, wie schnell daraus ein digitales Werkzeug und anschließend ein Shadowboard wird. Wir zeigen Ihnen den kompletten Workflow in einer kurzen Live-Demo.</p>
-      </div>
-      <div class="cta-btns">
-        <a class="btn btn-dark" href="mailto:[E-MAIL]?subject=Live-Demo%20anfragen">Live-Demo anfragen</a>
-        <a class="btn btn-outline" href="#kontakt">Kontakt</a>
+        <!-- Stage Graphic / Visual Preview -->
+        <div class="lg:col-span-7 sticky top-28">
+          <div class="glass-card rounded-3xl p-6 relative overflow-hidden border border-white/10">
+            <div class="aspect-video w-full rounded-2xl bg-dark/90 flex items-center justify-center p-6 relative overflow-hidden border border-white/5">
+              
+              <!-- Dynamic Content based on step -->
+              <div id="step-stage-content" class="w-full h-full flex flex-col items-center justify-center text-center p-4">
+                <!-- SVG Stage Animation placeholder -->
+                <svg viewBox="0 0 400 240" class="w-full h-full max-h-[220px]">
+                  <rect x="50" y="20" width="300" height="200" rx="16" fill="#161B26" stroke="#00F0FF" stroke-width="2" stroke-dasharray="6 6"/>
+                  <circle id="stage-anim-circle" cx="200" cy="120" r="40" fill="#FF5E00" class="animate-bounce"/>
+                  <text id="stage-anim-text" x="200" y="125" text-anchor="middle" font-family="Space Grotesk" font-size="16" font-weight="700" fill="#FFFFFF">DRUCKEN</text>
+                </svg>
+              </div>
+
+            </div>
+
+            <div class="mt-4 flex items-center justify-between text-xs text-gray-400">
+              <span id="step-indicator">Schritt 1 von 5</span>
+              <button id="step-next-btn" type="button" class="text-pop font-bold hover:underline">Nächster Schritt →</button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <!-- INTERACTIVE 2D BOARD DESIGNER / EDITOR -->
+  <section id="designer" class="py-24 bg-dark/80 relative border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <div class="text-cyanGlow font-bold text-xs uppercase tracking-widest mb-2">Live 2D Designer</div>
+        <h2 class="font-display font-bold text-3xl sm:text-5xl text-white">GESTALTE DEIN BOARD LIVE</h2>
+        <p class="text-gray-400 mt-2">Platziere Werkzeug, passe Farben an, füge Gravuren hinzu & lade deinen Entwurf herunter.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Editor Canvas Area -->
+        <div class="lg:col-span-8">
+          <div class="glass-card rounded-3xl p-6 relative">
+            
+            <!-- Canvas Toolbar Top -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b border-white/10 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-cyanGlow animate-ping"></span>
+                <span id="ed-status-msg" class="font-bold text-gray-200">Bereit zum Gestalten</span>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button id="ed-btn-auto" type="button" class="px-3 py-1.5 rounded-lg bg-pop/20 text-pop border border-pop/40 font-bold hover:bg-pop hover:text-white transition-all">
+                  ⚡ Auto-Organize
+                </button>
+                <button id="ed-btn-clear" type="button" class="px-3 py-1.5 rounded-lg bg-white/5 text-gray-300 hover:bg-red-500/20 hover:text-red-400 transition-all">
+                  Löschen
+                </button>
+              </div>
+            </div>
+
+            <!-- SVG Board Canvas Area -->
+            <div class="relative bg-dark/95 rounded-2xl p-4 border border-white/10 min-h-[380px] flex items-center justify-center overflow-hidden">
+              <svg id="ed-svg" viewBox="0 0 600 400" class="w-full h-auto select-none touch-none">
+                <!-- Main Board Surface -->
+                <rect id="ed-board-rect" x="20" y="20" width="560" height="360" rx="20" fill="#181E29" stroke="#2B3548" stroke-width="4"/>
+                
+                <!-- Grid Lines -->
+                <g opacity="0.1" stroke="#FFFFFF" stroke-width="1">
+                  <line x1="20" y1="100" x2="580" y2="100"/>
+                  <line x1="20" y1="180" x2="580" y2="180"/>
+                  <line x1="20" y1="260" x2="580" y2="260"/>
+                  <line x1="20" y1="340" x2="580" y2="340"/>
+                  <line x1="160" y1="20" x2="160" y2="380"/>
+                  <line x1="300" y1="20" x2="300" y2="380"/>
+                  <line x1="440" y1="20" x2="440" y2="380"/>
+                </g>
+
+                <!-- Dynamic Items Group -->
+                <g id="ed-items-group"></g>
+
+                <!-- Text Engraving -->
+                <g id="ed-engraving-group" transform="translate(300, 360)" cursor="move" class="select-none">
+                  <text id="ed-engraving-text" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="16" fill="#3A4659" letter-spacing="0.1em">MEIN PLATZDA BOARD</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Canvas Controls Bottom -->
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-4 text-xs text-gray-400">
+              <div>💡 Klicke ein Teil an zum Auswählen. Drag & Drop zum Verschieben.</div>
+              <button id="ed-export-png" type="button" class="px-4 py-2 rounded-xl bg-gradient-to-r from-teal to-cyanGlow text-dark font-extrabold shadow-lg hover:brightness-110 transition-all flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Design herunterladen (PNG)
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Designer Controls Sidebar -->
+        <div class="lg:col-span-4 space-y-6">
+          
+          <!-- Add Object Box -->
+          <div class="glass-card rounded-2xl p-5">
+            <h3 class="font-display font-bold text-white text-base mb-3 flex items-center gap-2">
+              <span class="text-pop">1.</span> Gegenstand hinzufügen
+            </h3>
+            <div class="grid grid-cols-3 gap-2" id="ed-catalog">
+              <!-- Item Catalog Buttons dynamically inserted -->
+            </div>
+          </div>
+
+          <!-- Board Customization -->
+          <div class="glass-card rounded-2xl p-5 space-y-4">
+            <h3 class="font-display font-bold text-white text-base flex items-center gap-2">
+              <span class="text-pop">2.</span> Board anpassen
+            </h3>
+
+            <!-- Color Swatches -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-400 mb-2">Schaumstoff-Farbe</label>
+              <div class="flex items-center gap-3" id="ed-color-swatches">
+                <button type="button" data-color="#181E29" class="w-8 h-8 rounded-full bg-[#181E29] border-2 border-pop shadow-md" title="Cyber Black"></button>
+                <button type="button" data-color="#0F2B3C" class="w-8 h-8 rounded-full bg-[#0F2B3C] border-2 border-transparent hover:border-white shadow-md" title="Nachtblau"></button>
+                <button type="button" data-color="#1A3326" class="w-8 h-8 rounded-full bg-[#1A3326] border-2 border-transparent hover:border-white shadow-md" title="Waldgrün"></button>
+                <button type="button" data-color="#3D1A1A" class="w-8 h-8 rounded-full bg-[#3D1A1A] border-2 border-transparent hover:border-white shadow-md" title="Neon Rot"></button>
+              </div>
+            </div>
+
+            <!-- Board Size Preset -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-400 mb-2">Größe</label>
+              <select id="ed-size-select" class="w-full bg-dark/80 border border-white/10 rounded-xl px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-pop">
+                <option value="560,360">Standard (Schublade: 56 x 36 cm)</option>
+                <option value="460,300">Kompakt (Koffer: 46 x 30 cm)</option>
+                <option value="560,240">Schmal (Kiste: 56 x 24 cm)</option>
+              </select>
+            </div>
+
+            <!-- Engraving Input -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-400 mb-2">Wunsch-Gravur</label>
+              <input type="text" id="ed-engrave-input" placeholder="z. B. SCHREIBTISCH OBEN" value="MEIN PLATZDA BOARD" class="w-full bg-dark/80 border border-white/10 rounded-xl px-3 py-2 text-sm text-gray-200 uppercase focus:outline-none focus:border-pop">
+            </div>
+          </div>
+
+          <!-- Selected Item Actions -->
+          <div class="glass-card rounded-2xl p-5">
+            <h3 class="font-display font-bold text-white text-base mb-3 flex items-center gap-2">
+              <span class="text-pop">3.</span> Objekt-Aktionen
+            </h3>
+            <div class="grid grid-cols-2 gap-2">
+              <button id="ed-btn-rotate" type="button" class="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-gray-200 transition-all flex items-center justify-center gap-1">
+                ↻ 90° Drehen
+              </button>
+              <button id="ed-btn-delete" type="button" class="px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-xs font-bold text-red-400 transition-all flex items-center justify-center gap-1">
+                🗑 Entfernen
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE PRICE CALCULATOR -->
+  <section id="calculator" class="py-24 relative bg-dark/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="text-teal font-bold text-xs uppercase tracking-widest mb-2">Echtzeit-Berechnung</div>
+        <h2 class="font-display font-bold text-3xl sm:text-5xl text-white">PREIS- & FERTIGUNGSRECHNER</h2>
+        <p class="text-gray-400 mt-2">Berechne sofort die exakten Kosten für dein individuelles Board.</p>
+      </div>
+
+      <div class="max-w-4xl mx-auto glass-card rounded-3xl p-6 sm:p-10 border border-white/10">
+        <div class="grid md:grid-cols-2 gap-10 items-center">
+          
+          <!-- Input Sliders -->
+          <div class="space-y-6">
+            
+            <!-- Width -->
+            <div>
+              <div class="flex justify-between text-sm font-bold text-gray-200 mb-2">
+                <span>Breite (cm)</span>
+                <span id="calc-val-w" class="text-pop">50 cm</span>
+              </div>
+              <input type="range" id="calc-w" min="20" max="120" value="50" class="w-full">
+            </div>
+
+            <!-- Height / Depth -->
+            <div>
+              <div class="flex justify-between text-sm font-bold text-gray-200 mb-2">
+                <span>Tiefe (cm)</span>
+                <span id="calc-val-h" class="text-pop">35 cm</span>
+              </div>
+              <input type="range" id="calc-h" min="15" max="80" value="35" class="w-full">
+            </div>
+
+            <!-- Object Count -->
+            <div>
+              <div class="flex justify-between text-sm font-bold text-gray-200 mb-2">
+                <span>Anzahl Werkzeuge/Ausschnitte</span>
+                <span id="calc-val-count" class="text-cyanGlow">8 Teile</span>
+              </div>
+              <input type="range" id="calc-count" min="1" max="30" value="8" class="w-full">
+            </div>
+
+            <!-- Material Option -->
+            <div>
+              <label class="block text-xs font-bold text-gray-400 mb-2 uppercase">Material wählen</label>
+              <div class="grid grid-cols-2 gap-2" id="calc-mat-opts">
+                <button type="button" data-mat="std" class="calc-mat-btn p-3 rounded-xl glass border border-pop text-left text-xs font-bold text-white">
+                  Standard Foam
+                  <span class="block text-[10px] text-gray-400 font-normal">Ideal für Schubladen</span>
+                </button>
+                <button type="button" data-mat="esd" class="calc-mat-btn p-3 rounded-xl glass border border-white/10 text-left text-xs font-bold text-gray-300 hover:border-white">
+                  Premium ESD
+                  <span class="block text-[10px] text-gray-400 font-normal">Antistatisch für Elektronik</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Price Display Output Card -->
+          <div class="bg-dark/90 rounded-2xl p-6 border border-white/10 flex flex-col justify-between h-full space-y-6">
+            <div>
+              <div class="text-xs text-gray-400 uppercase font-bold tracking-wider">Geschätzter Gesamtpreis</div>
+              <div id="calc-total-price" class="font-display font-extrabold text-5xl text-white my-2 text-glow">
+                49,90 €
+              </div>
+              <div class="text-xs text-emerald-400 font-semibold flex items-center gap-1">
+                ✓ Inkl. MwSt. & kostenlosem Versand
+              </div>
+            </div>
+
+            <div class="space-y-3 pt-4 border-t border-white/10 text-xs">
+              <div class="flex justify-between text-gray-300">
+                <span>Fertigungszeit:</span>
+                <span id="calc-time" class="font-bold text-white">2 - 3 Werktage</span>
+              </div>
+              <div class="flex justify-between text-gray-300">
+                <span>Passgenauigkeit:</span>
+                <span class="font-bold text-cyanGlow">± 0.1 mm CNC-Präzision</span>
+              </div>
+            </div>
+
+            <a href="#mitmachen" class="w-full py-4 rounded-xl bg-gradient-to-r from-pop to-amber-500 text-white font-bold text-center block shadow-lg shadow-pop/30 hover:scale-[1.02] active:scale-[0.98] transition-all">
+              Jetzt unverbindlich anfragen
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- GAMIFIED CHAOS-TYP QUIZ -->
+  <section id="quiz" class="py-24 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <div class="text-amber-400 font-bold text-xs uppercase tracking-widest mb-2">Interaktiver Test</div>
+        <h2 class="font-display font-bold text-3xl sm:text-5xl text-white">WELCHER ORDNUNGS-TYP BIST DU?</h2>
+        <p class="text-gray-400 mt-2">Beantworte 3 kurze Fragen und erhalte deine persönliche Auswertung.</p>
+      </div>
+
+      <div class="max-w-2xl mx-auto glass-card rounded-3xl p-6 sm:p-10 relative overflow-hidden" id="quiz-box">
+        
+        <!-- Quiz Progress Bar -->
+        <div class="w-full bg-white/5 h-2 rounded-full mb-8 overflow-hidden">
+          <div id="quiz-progress" class="bg-gradient-to-r from-pop to-amber-400 h-full w-1/3 transition-all duration-300"></div>
+        </div>
+
+        <!-- Question View -->
+        <div id="quiz-question-container" class="space-y-6">
+          <h3 id="quiz-question-title" class="font-display font-bold text-xl sm:text-2xl text-white">
+            1. Wie sieht dein Werkzeugkoffer oder Schreibtisch aktuell aus?
+          </h3>
+
+          <div id="quiz-options" class="space-y-3">
+            <!-- Dynamically populated options -->
+          </div>
+        </div>
+
+        <!-- Result View (Hidden initially) -->
+        <div id="quiz-result-container" class="hidden text-center space-y-6 py-4">
+          <div class="w-20 h-20 rounded-full bg-pop/20 border-2 border-pop text-pop font-display font-extrabold text-3xl flex items-center justify-center mx-auto animate-bounce">
+            🎯
+          </div>
+          <h3 id="quiz-result-title" class="font-display font-bold text-2xl sm:text-3xl text-white">
+            Typ: Der strukturierte Chaot
+          </h3>
+          <p id="quiz-result-desc" class="text-gray-300 text-sm sm:text-base max-w-lg mx-auto">
+            Du weißt zwar meistens wo deine Sachen sind, aber Verlegen kostet dich jede Woche wertvolle Zeit. Ein Platzda-Board gibt dir 100% Fokus zurück!
+          </p>
+          <button id="quiz-restart-btn" type="button" class="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-sm transition-all">
+            Quiz neustarten ↺
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FORM / CONTACT SECTION -->
+  <section id="mitmachen" class="py-24 bg-dark/90 relative border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid lg:grid-cols-12 gap-12 items-start">
+        
+        <div class="lg:col-span-5 space-y-6">
+          <div class="text-pop font-bold text-xs uppercase tracking-widest">Unverbindlich</div>
+          <h2 class="font-display font-bold text-3xl sm:text-5xl text-white leading-tight">
+            DEIN TRAUM-BOARD ANFRAGEN
+          </h2>
+          <p class="text-gray-300 text-base leading-relaxed">
+            Sag uns kurz, wofür du dein Board brauchst. Wir melden uns umgehend mit einem unverbindlichen Entwurf & Angebot bei dir.
+          </p>
+
+          <div class="p-6 rounded-2xl glass border-l-4 border-l-pop space-y-2">
+            <div class="font-bold text-white text-sm">💡 Direct Mail Generator:</div>
+            <p class="text-xs text-gray-400">
+              Deine Eingaben erzeugen automatisch eine fertige E-Mail-Vorlage in deinem Mail-Programm. Keine Datenbankspeicherung nötig!
+            </p>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7">
+          <form id="contact-form" class="glass-card rounded-3xl p-6 sm:p-10 space-y-6">
+            
+            <div>
+              <label class="block text-xs font-bold text-gray-300 uppercase mb-2">Einsatzbereich</label>
+              <select id="form-use" class="w-full bg-dark/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 focus:outline-none focus:border-pop">
+                <option value="Werkstatt & Werkzeug">Werkstatt & Werkzeug</option>
+                <option value="Foto & Video Gear">Foto & Video Equipment</option>
+                <option value="Gaming & Technik">Gaming & Technik</option>
+                <option value="Drohne & RC-Modellbau">Drohne & RC-Modellbau</option>
+                <option value="Sonstiges">Sonstiges</option>
+              </select>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-300 uppercase mb-2">Ungefähre Breite (cm)</label>
+                <input type="number" id="form-width" placeholder="z. B. 50" value="50" class="w-full bg-dark/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 focus:outline-none focus:border-pop">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-300 uppercase mb-2">Ungefähre Tiefe (cm)</label>
+                <input type="number" id="form-height" placeholder="z. B. 35" value="35" class="w-full bg-dark/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 focus:outline-none focus:border-pop">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-300 uppercase mb-2">Welche Gegenstände sollen drauf?</label>
+              <textarea id="form-items" rows="3" placeholder="z. B. 2x Controller, Headset, Ladekabel, SD-Karten..." class="w-full bg-dark/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 focus:outline-none focus:border-pop"></textarea>
+            </div>
+
+            <!-- Preview Box -->
+            <div id="form-preview-box" class="p-4 rounded-xl bg-dark/60 border border-white/5 text-xs font-mono text-gray-400 whitespace-pre-wrap"></div>
+
+            <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-pop via-amber-500 to-cyanGlow text-dark font-extrabold text-base shadow-lg shadow-pop/20 hover:brightness-110 active:scale-[0.99] transition-all">
+              ✉️ Anfrage per E-Mail absenden
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
 
 </main>
 
-<footer id="kontakt">
-  <div class="wrap">
-    <div style="display:grid;gap:14px;align-content:start">
-      <a class="logo" href="#top">
-        <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="6" fill="#4F8EF7"/><rect x="7" y="12" width="20" height="10" rx="5" fill="#0F1117"/><rect x="12" y="15" width="10" height="4" rx="2" fill="#38BDF8"/></svg>
-        [Produktname]
-      </a>
-      <p class="muted">Werkzeuge digitalisieren.<br>Shadowboards standardisieren.</p>
+<!-- FOOTER -->
+<footer class="py-10 border-t border-white/10 text-xs text-gray-500 relative z-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2 font-display font-bold text-white">
+      <span class="text-pop">PLATZDA</span> © 2026 – Passgenaue Foam Boards
     </div>
-    <div class="foot-cols">
-      <div><b>Produkt</b><a href="#ablauf">Ablauf</a><a href="#bibliothek">Bibliothek</a><a href="#designer">Board-Designer</a><a href="#export">DXF-Export</a></div>
-      <div><b>Kontakt</b><a href="#demo">Live-Demo anfragen</a><a href="mailto:[E-MAIL]">[E-Mail-Adresse]</a><span>[Telefon]</span></div>
-      <div><b>Rechtliches</b><a href="#impressum">Impressum</a><a href="#datenschutz">Datenschutz</a></div>
+    <div class="flex gap-6">
+      <a href="#" class="hover:text-gray-300">Impressum</a>
+      <a href="#" class="hover:text-gray-300">Datenschutz</a>
+      <a href="#" class="hover:text-gray-300">AGB</a>
     </div>
   </div>
 </footer>
 
+<!-- SCRIPT LOGIC -->
+<script>
+"use strict";
+
+/* --------------------------------------------------
+ * 1. WEB AUDIO API SYNTH (Sound Effects)
+ * -------------------------------------------------- */
+class SoundFx {
+  constructor() {
+    this.ctx = null;
+    this.muted = false;
+  }
+
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+  }
+
+  playPop() {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.08);
+
+    gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.08);
+  }
+
+  playPlace() {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.1);
+
+    gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.1);
+  }
+
+  playSuccess() {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+    notes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.08);
+
+      gain.gain.setValueAtTime(0.2, this.ctx.currentTime + idx * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.08 + 0.3);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(this.ctx.currentTime + idx * 0.08);
+      osc.stop(this.ctx.currentTime + idx * 0.08 + 0.3);
+    });
+  }
+}
+
+const sfx = new SoundFx();
+
+// Sound toggle button
+const soundBtn = document.getElementById("sound-toggle");
+const soundOnIcon = document.getElementById("sound-icon-on");
+const soundOffIcon = document.getElementById("sound-icon-off");
+
+soundBtn.addEventListener("click", () => {
+  sfx.muted = !sfx.muted;
+  soundOnIcon.classList.toggle("hidden", sfx.muted);
+  soundOffIcon.classList.toggle("hidden", !sfx.muted);
+});
+
+/* --------------------------------------------------
+ * 2. BACKGROUND CANVAS PARTICLES
+ * -------------------------------------------------- */
+const bgCanvas = document.getElementById("bg-canvas");
+const bgCtx = bgCanvas.getContext("2d");
+let particles = [];
+
+function resizeBgCanvas() {
+  bgCanvas.width = window.innerWidth;
+  bgCanvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeBgCanvas);
+resizeBgCanvas();
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * bgCanvas.width;
+    this.y = Math.random() * bgCanvas.height;
+    this.size = Math.random() * 2 + 0.5;
+    this.vx = (Math.random() - 0.5) * 0.4;
+    this.vy = (Math.random() - 0.5) * 0.4;
+    this.alpha = Math.random() * 0.5 + 0.1;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0 || this.x > bgCanvas.width || this.y < 0 || this.y > bgCanvas.height) {
+      this.reset();
+    }
+  }
+  draw() {
+    bgCtx.fillStyle = `rgba(255, 94, 0, ${this.alpha})`;
+    bgCtx.beginPath();
+    bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    bgCtx.fill();
+  }
+}
+
+for (let i = 0; i < 40; i++) particles.push(new Particle());
+
+function animateParticles() {
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+/* --------------------------------------------------
+ * 3. HERO POWER BOARD DEMO
+ * -------------------------------------------------- */
+const HERO_PIECES = [
+  {id: "ctrl", name: "Controller", shape: "s-ctrl", x: 44, y: 46, fill: "#3B4A5C"},
+  {id: "mouse", name: "Gaming Maus", shape: "s-mouse", x: 268, y: 44, fill: "#E8E4DC"},
+  {id: "b1", name: "Akku Pack 1", shape: "s-batt", x: 388, y: 44, fill: "#3A3F47"},
+  {id: "b2", name: "Akku Pack 2", shape: "s-batt", x: 428, y: 44, fill: "#3A3F47"},
+  {id: "drv", name: "Schraubendreher", shape: "s-driver", x: 46, y: 322, rot: -90, fill: "#2F7D78"},
+  {id: "sd1", name: "Speicherkarte", shape: "s-sd", x: 270, y: 214, fill: "#4D5BCE"}
+];
+
+const heroPockets = document.getElementById("hero-pockets");
+const heroItems = document.getElementById("hero-items");
+const heroStatusText = document.getElementById("hero-status-text");
+const heroResetBtn = document.getElementById("hero-reset-btn");
+const heroComboEl = document.getElementById("hero-combo");
+const heroOut = new Set();
+let heroComboCount = 0;
+
+function showToast(msg) {
+  const container = document.getElementById("toast-container");
+  const toast = document.createElement("div");
+  toast.className = "toast-enter glass border border-pop text-white font-display font-bold text-sm px-6 py-3 rounded-full shadow-2xl flex items-center gap-2";
+  toast.innerHTML = `<span>🏆</span> <span>${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function renderHeroBoard() {
+  heroPockets.innerHTML = "";
+  heroItems.innerHTML = "";
+
+  HERO_PIECES.forEach(p => {
+    // Pocket (background outline)
+    const pocket = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    pocket.setAttribute("transform", `translate(${p.x} ${p.y})` + (p.rot ? ` rotate(${p.rot})` : ""));
+    pocket.innerHTML = `<use href="#${p.shape}" class="pocket"/>`;
+    pocket.classList.add("pocket-hit");
+    pocket.addEventListener("click", () => toggleHeroPiece(p.id, false));
+    heroPockets.appendChild(pocket);
+
+    // Item (draggable/clickable object)
+    const holder = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    holder.setAttribute("transform", `translate(${p.x} ${p.y})` + (p.rot ? ` rotate(${p.rot})` : ""));
+    
+    const item = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    item.classList.add("hero-item");
+    if (heroOut.has(p.id)) item.classList.add("out");
+    item.innerHTML = `<use href="#${p.shape}" fill="${p.fill}"/>`;
+    item.addEventListener("click", () => toggleHeroPiece(p.id, true));
+
+    holder.appendChild(item);
+    heroItems.appendChild(holder);
+  });
+}
+
+function toggleHeroPiece(id, remove) {
+  if (remove) {
+    heroOut.add(id);
+    sfx.playPop();
+    heroComboCount++;
+  } else {
+    heroOut.delete(id);
+    sfx.playPlace();
+  }
+
+  heroComboEl.textContent = `Combo: ${heroComboCount}`;
+
+  // Check achievements
+  if (heroOut.size === HERO_PIECES.length) {
+    sfx.playSuccess();
+    showToast("ACHIEVEMENT: CHAOS KING! Alles abgeräumt!");
+    heroStatusText.innerHTML = `Status: <span class="text-pop">Board Komplett Leer!</span>`;
+  } else if (heroOut.size === 0) {
+    sfx.playSuccess();
+    showToast("ACHIEVEMENT: PERFEKTIONIST! Alles geordnet!");
+    heroStatusText.innerHTML = `Status: <span class="text-emerald-400">Vollständig bestückt</span>`;
+  } else {
+    heroStatusText.innerHTML = `Status: <span class="text-amber-400">${HERO_PIECES.length - heroOut.size} von ${HERO_PIECES.length} Teilen eingelegt</span>`;
+  }
+
+  heroResetBtn.classList.toggle("hidden", heroOut.size === 0);
+  renderHeroBoard();
+}
+
+heroResetBtn.addEventListener("click", () => {
+  heroOut.clear();
+  sfx.playSuccess();
+  renderHeroBoard();
+  heroStatusText.innerHTML = `Status: <span class="text-emerald-400">Vollständig bestückt</span>`;
+  heroResetBtn.classList.add("hidden");
+});
+
+renderHeroBoard();
+
+/* --------------------------------------------------
+ * 4. BEFORE / AFTER COMPARISON SLIDER
+ * -------------------------------------------------- */
+const baSlider = document.getElementById("ba-slider");
+const baBefore = document.getElementById("ba-before");
+const baHandle = document.getElementById("ba-handle");
+let isDraggingBA = false;
+
+function updateBASlider(clientX) {
+  const rect = baSlider.getBoundingClientRect();
+  let x = clientX - rect.left;
+  x = Math.max(0, Math.min(x, rect.width));
+  const percent = (x / rect.width) * 100;
+  baBefore.style.width = `${percent}%`;
+  baHandle.style.left = `${percent}%`;
+}
+
+baSlider.addEventListener("mousedown", (e) => { isDraggingBA = true; updateBASlider(e.clientX); });
+window.addEventListener("mousemove", (e) => { if (isDraggingBA) updateBASlider(e.clientX); });
+window.addEventListener("mouseup", () => { isDraggingBA = false; });
+
+baSlider.addEventListener("touchstart", (e) => { isDraggingBA = true; updateBASlider(e.touches[0].clientX); });
+window.addEventListener("touchmove", (e) => { if (isDraggingBA) updateBASlider(e.touches[0].clientX); });
+window.addEventListener("touchend", () => { isDraggingBA = false; });
+
+/* --------------------------------------------------
+ * 5. INTERACTIVE 2D BOARD DESIGNER / EDITOR
+ * -------------------------------------------------- */
+const CATALOG = [
+  {id: "s-ctrl", name: "Gamepad", width: 140, height: 80, fill: "#3B4A5C"},
+  {id: "s-mouse", name: "Maus", width: 60, height: 90, fill: "#E8E4DC"},
+  {id: "s-camera", name: "Kamera", width: 120, height: 85, fill: "#FF5E00"},
+  {id: "s-drone", name: "Drohne", width: 110, height: 90, fill: "#00F0FF"},
+  {id: "s-knife", name: "Messer", width: 25, height: 140, fill: "#2F7D78"},
+  {id: "s-driver", name: "Dreher", width: 34, height: 160, fill: "#E9B949"}
+];
+
+const edCatalogEl = document.getElementById("ed-catalog");
+const edItemsGroup = document.getElementById("ed-items-group");
+const edSvg = document.getElementById("ed-svg");
+const edBoardRect = document.getElementById("ed-board-rect");
+const edEngraveInput = document.getElementById("ed-engrave-input");
+const edEngraveText = document.getElementById("ed-engraving-text");
+const edEngraveGroup = document.getElementById("ed-engraving-group");
+
+let editorItems = [];
+let selectedEditorItem = null;
+
+// Populate Catalog
+CATALOG.forEach(item => {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-gray-200 transition-all flex flex-col items-center gap-1";
+  btn.innerHTML = `<span class="text-pop">+</span> <span>${item.name}</span>`;
+  btn.addEventListener("click", () => addEditorItem(item));
+  edCatalogEl.appendChild(btn);
+});
+
+function addEditorItem(itemDef) {
+  sfx.playPop();
+  const newItem = {
+    uid: "item_" + Date.now(),
+    def: itemDef,
+    x: 250 + (Math.random() * 40 - 20),
+    y: 150 + (Math.random() * 40 - 20),
+    rot: 0
+  };
+  editorItems.push(newItem);
+  selectEditorItem(newItem);
+  renderEditor();
+}
+
+function renderEditor() {
+  edItemsGroup.innerHTML = "";
+
+  editorItems.forEach(item => {
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.classList.add("ed-piece");
+    if (selectedEditorItem && selectedEditorItem.uid === item.uid) {
+      g.classList.add("sel");
+    }
+
+    g.setAttribute("transform", `translate(${item.x}, ${item.y}) rotate(${item.rot})`);
+    g.innerHTML = `
+      <use href="#${item.def.id}" class="pk"/>
+      <use href="#${item.def.id}" fill="${item.def.fill}"/>
+    `;
+
+    // Dragging logic
+    let isDragging = false;
+    let startX = 0, startY = 0;
+
+    g.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+      selectEditorItem(item);
+      isDragging = true;
+      startX = e.clientX - item.x;
+      startY = e.clientY - item.y;
+      g.setPointerCapture(e.pointerId);
+    });
+
+    g.addEventListener("pointermove", (e) => {
+      if (!isDragging) return;
+      item.x = e.clientX - startX;
+      item.y = e.clientY - startY;
+      g.setAttribute("transform", `translate(${item.x}, ${item.y}) rotate(${item.rot})`);
+    });
+
+    const stopDrag = () => { if (isDragging) { isDragging = false; sfx.playPlace(); } };
+    g.addEventListener("pointerup", stopDrag);
+    g.addEventListener("pointercancel", stopDrag);
+
+    edItemsGroup.appendChild(g);
+  });
+}
+
+function selectEditorItem(item) {
+  selectedEditorItem = item;
+  renderEditor();
+}
+
+// Rotate button
+document.getElementById("ed-btn-rotate").addEventListener("click", () => {
+  if (selectedEditorItem) {
+    selectedEditorItem.rot = (selectedEditorItem.rot + 90) % 360;
+    sfx.playPop();
+    renderEditor();
+  }
+});
+
+// Delete button
+document.getElementById("ed-btn-delete").addEventListener("click", () => {
+  if (selectedEditorItem) {
+    editorItems = editorItems.filter(i => i.uid !== selectedEditorItem.uid);
+    selectedEditorItem = null;
+    sfx.playPop();
+    renderEditor();
+  }
+});
+
+// Clear button
+document.getElementById("ed-btn-clear").addEventListener("click", () => {
+  editorItems = [];
+  selectedEditorItem = null;
+  sfx.playPop();
+  renderEditor();
+});
+
+// Auto organize button
+document.getElementById("ed-btn-auto").addEventListener("click", () => {
+  sfx.playSuccess();
+  let currentX = 60;
+  let currentY = 60;
+  editorItems.forEach(item => {
+    item.x = currentX;
+    item.y = currentY;
+    item.rot = 0;
+    currentX += 120;
+    if (currentX > 480) {
+      currentX = 60;
+      currentY += 120;
+    }
+  });
+  renderEditor();
+});
+
+// Color swatches
+document.querySelectorAll("#ed-color-swatches button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const col = btn.getAttribute("data-color");
+    edBoardRect.setAttribute("fill", col);
+    sfx.playPop();
+  });
+});
+
+// Engraving text update
+edEngraveInput.addEventListener("input", (e) => {
+  edEngraveText.textContent = e.target.value.toUpperCase() || "";
+});
+
+// Board size selection
+document.getElementById("ed-size-select").addEventListener("change", (e) => {
+  const [w, h] = e.target.value.split(",").map(Number);
+  edBoardRect.setAttribute("width", w);
+  edBoardRect.setAttribute("height", h);
+  sfx.playPop();
+});
+
+// Export design as PNG
+document.getElementById("ed-export-png").addEventListener("click", () => {
+  sfx.playSuccess();
+  const svgData = new XMLSerializer().serializeToString(edSvg);
+  const svgBlob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+  const url = URL.createObjectURL(svgBlob);
+  
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1200;
+    canvas.height = 800;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, 1200, 800);
+    
+    const a = document.createElement("a");
+    a.download = "platzda-board-design.png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  img.src = url;
+});
+
+// Add default initial items to Editor
+addEditorItem(CATALOG[0]);
+addEditorItem(CATALOG[1]);
+
+/* --------------------------------------------------
+ * 6. REAL-TIME PRICE CALCULATOR
+ * -------------------------------------------------- */
+const calcW = document.getElementById("calc-w");
+const calcH = document.getElementById("calc-h");
+const calcCount = document.getElementById("calc-count");
+const calcValW = document.getElementById("calc-val-w");
+const calcValH = document.getElementById("calc-val-h");
+const calcValCount = document.getElementById("calc-val-count");
+const calcTotalPrice = document.getElementById("calc-total-price");
+let calcMaterial = "std";
+
+function updatePrice() {
+  const w = parseInt(calcW.value);
+  const h = parseInt(calcH.value);
+  const count = parseInt(calcCount.value);
+
+  calcValW.textContent = `${w} cm`;
+  calcValH.textContent = `${h} cm`;
+  calcValCount.textContent = `${count} Teile`;
+
+  const area = (w * h) / 100; // area in dm²
+  const basePrice = 19.90;
+  const areaFactor = area * 0.85;
+  const itemFactor = count * 2.20;
+  const matFactor = calcMaterial === "esd" ? 1.35 : 1.0;
+
+  const total = (basePrice + areaFactor + itemFactor) * matFactor;
+  calcTotalPrice.textContent = total.toFixed(2).replace(".", ",") + " €";
+}
+
+calcW.addEventListener("input", updatePrice);
+calcH.addEventListener("input", updatePrice);
+calcCount.addEventListener("input", updatePrice);
+
+document.querySelectorAll(".calc-mat-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".calc-mat-btn").forEach(b => {
+      b.classList.remove("border-pop", "text-white");
+      b.classList.add("border-white/10", "text-gray-300");
+    });
+    btn.classList.add("border-pop", "text-white");
+    btn.classList.remove("border-white/10", "text-gray-300");
+    calcMaterial = btn.getAttribute("data-mat");
+    updatePrice();
+  });
+});
+
+updatePrice();
+
+/* --------------------------------------------------
+ * 7. GAMIFIED QUIZ LOGIC
+ * -------------------------------------------------- */
+const QUIZ_QUESTIONS = [
+  {
+    title: "1. Wie bewahrst du dein Equipment aktuell auf?",
+    options: [
+      { text: "In Kisten geschüttet – Suchen gehört dazu!", score: 3 },
+      { text: "In der Schublade, aber alles verrutscht ständig.", score: 2 },
+      { text: "Eigentlich ordentlich, aber nicht geschützt.", score: 1 }
+    ]
+  },
+  {
+    title: "2. Wie oft vermisst du ein Werkzeug oder Zubehörteil?",
+    options: [
+      { text: "Ständig! Erst am Einsatzort merke ich, dass was fehlt.", score: 3 },
+      { text: "Ab und zu verlege ich Ladekabel oder Bits.", score: 2 },
+      { text: "Selten, aber ich will den perfekten Überblick.", score: 1 }
+    ]
+  },
+  {
+    title: "3. Welcher Typ bist du?",
+    options: [
+      { text: "Gamer / Tech-Enthusiast (Kamera, Controller, Akkus)", score: 1 },
+      { text: "Handwerker / DIY-Macher (Zangen, Schrauber, Bits)", score: 2 },
+      { text: "Outdoor / Hobby (Köder, Messer, Ausrüstung)", score: 3 }
+    ]
+  }
+];
+
+let currentQuizStep = 0;
+let totalQuizScore = 0;
+
+const quizQuestionTitle = document.getElementById("quiz-question-title");
+const quizOptionsEl = document.getElementById("quiz-options");
+const quizProgress = document.getElementById("quiz-progress");
+const quizQuestionContainer = document.getElementById("quiz-question-container");
+const quizResultContainer = document.getElementById("quiz-result-container");
+
+function renderQuizStep() {
+  const q = QUIZ_QUESTIONS[currentQuizStep];
+  quizQuestionTitle.textContent = q.title;
+  quizProgress.style.width = `${((currentQuizStep + 1) / QUIZ_QUESTIONS.length) * 100}%`;
+  quizOptionsEl.innerHTML = "";
+
+  q.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "w-full text-left p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 font-semibold text-sm transition-all hover:border-pop flex items-center justify-between";
+    btn.innerHTML = `<span>${opt.text}</span> <span class="text-pop">→</span>`;
+    btn.addEventListener("click", () => {
+      sfx.playPop();
+      totalQuizScore += opt.score;
+      currentQuizStep++;
+      if (currentQuizStep < QUIZ_QUESTIONS.length) {
+        renderQuizStep();
+      } else {
+        showQuizResult();
+      }
+    });
+    quizOptionsEl.appendChild(btn);
+  });
+}
+
+function showQuizResult() {
+  quizQuestionContainer.classList.add("hidden");
+  quizResultContainer.classList.remove("hidden");
+  sfx.playSuccess();
+
+  const titleEl = document.getElementById("quiz-result-title");
+  const descEl = document.getElementById("quiz-result-desc");
+
+  if (totalQuizScore >= 7) {
+    titleEl.textContent = "Typ: Der ultimative Chaos-König 👑";
+    descEl.textContent = "Du verlierst jede Woche wertvolle Zeit mit Suchen. Ein Platzda-Board wird dein Leben verändern!";
+  } else if (totalQuizScore >= 4) {
+    titleEl.textContent = "Typ: Der pragmatische Macher 🛠";
+    descEl.textContent = "Du hast Grundordnung, aber dir fehlt die 100%ige Passgenauigkeit für dein Equipment.";
+  } else {
+    titleEl.textContent = "Typ: Der High-End Perfektionist 🎯";
+    descEl.textContent = "Für dich zählt jedes Detail. Unsere CNC-gefrästen Foam Boards sind wie gemacht für deinen Anspruch.";
+  }
+}
+
+document.getElementById("quiz-restart-btn").addEventListener("click", () => {
+  currentQuizStep = 0;
+  totalQuizScore = 0;
+  quizResultContainer.classList.add("hidden");
+  quizQuestionContainer.classList.remove("hidden");
+  renderQuizStep();
+});
+
+renderQuizStep();
+
+/* --------------------------------------------------
+ * 8. FORM & DIRECT MAIL GENERATOR
+ * -------------------------------------------------- */
+const form = document.getElementById("contact-form");
+const formUse = document.getElementById("form-use");
+const formW = document.getElementById("form-width");
+const formH = document.getElementById("form-height");
+const formItems = document.getElementById("form-items");
+const formPreview = document.getElementById("form-preview-box");
+
+function updateFormPreview() {
+  const text = `Hallo Platzda-Team,
+
+ich möchte ein unverbindliches Angebot für ein Board:
+
+• Einsatzbereich: ${formUse.value}
+• Maße: ca. ${formW.value || 50} x ${formH.value || 35} cm
+• Gegenstände: ${formItems.value || 'Noch nicht näher spezifiziert'}
+
+Bitte meldet euch bei mir für die weiteren Schritte!`;
+
+  formPreview.textContent = text;
+  return text;
+}
+
+[formUse, formW, formH, formItems].forEach(el => el.addEventListener("input", updateFormPreview));
+updateFormPreview();
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  sfx.playSuccess();
+  const body = updateFormPreview();
+  const mailtoUrl = `mailto:hallo@platzda.de?subject=${encodeURIComponent("Platzda Board Anfrage")}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailtoUrl;
+});
+</script>
 </body>
 </html>
